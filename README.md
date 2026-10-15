@@ -114,8 +114,9 @@ docker compose up -d --build
 Apri **http://localhost:8080**, tocca **Crea profilo** e sei dentro. Al primo avvio scarica
 una volta i media degli esercizi (circa 140 MB).
 
-> Per usarla dal telefono fuori casa con le passkey serve un dominio HTTPS: due righe in
-> `.env`. Guida completa in **[docs/SELF_HOSTING.md](docs/SELF_HOSTING.md)**.
+> Per usarla dal telefono fuori casa con le passkey serve un dominio HTTPS. Il proxy Caddy
+> incluso ottiene il certificato da solo: guida passo-passo per un VPS in
+> **[docs/DEPLOY_VPS.md](docs/DEPLOY_VPS.md)**, dettagli in [docs/SELF_HOSTING.md](docs/SELF_HOSTING.md).
 
 ### Su iPhone
 
@@ -167,6 +168,8 @@ Tutto in `.env` (vedi `.env.example`):
 | `RP_ID`          | Hostname a cui sono legate le passkey                   | `localhost`             |
 | `ORIGIN`         | URL completo da cui è servita l'app                     | `http://localhost:8080` |
 | `WEB_PORT`       | Porta sull'host                                         | `8080`                  |
+| `WEB_BIND`       | Interfaccia su cui esporre la porta (`127.0.0.1` dietro Caddy) | `0.0.0.0`          |
+| `DOMAIN`         | Dominio per il certificato di Caddy (solo con `docker-compose.caddy.yml`) | *(nessuno)* |
 | `RP_NAME`        | Nome mostrato nel prompt della passkey                  | `GianniGym`             |
 | `ADMIN_UIDS`     | Id utente con la dashboard admin (separati da virgola)  | *(nessuno)*             |
 | `INVITE_ONLY`    | Richiedi un codice invito per creare un profilo         | *(off)*                 |

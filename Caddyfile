@@ -1,0 +1,16 @@
+# Reverse proxy for GianniGym. DOMAIN comes from .env (docker-compose.caddy.yml passes it in).
+# Caddy requests a Let's Encrypt certificate for it on first start and renews it by itself.
+{$DOMAIN} {
+    encode zstd gzip
+
+    header {
+        Strict-Transport-Security "max-age=31536000"
+        X-Content-Type-Options nosniff
+        Referrer-Policy strict-origin-when-cross-origin
+        -Server
+    }
+
+    # Everything (the app, /api and the exercise media) is served by the web container,
+    # which proxies /api to the backend itself. One origin, as passkeys require.
+    reverse_proxy web:80
+}

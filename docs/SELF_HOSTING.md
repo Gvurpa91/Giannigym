@@ -54,6 +54,17 @@ the `web` container. Pick whichever you already run:
 
 ### Option B — Caddy (automatic Let's Encrypt)
 
+Bundled: `docker-compose.caddy.yml` adds a Caddy container that proxies to `web:80` and keeps
+its certificates in a volume. Set `DOMAIN`, `WEB_BIND=127.0.0.1` and the `RP_ID`/`ORIGIN`
+lines in `.env`, open ports 80 and 443, then
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.caddy.yml up -d --build
+```
+
+A step-by-step VPS walkthrough (in Italian) is in [DEPLOY_VPS.md](DEPLOY_VPS.md). Running Caddy
+on the host instead is a two-line Caddyfile:
+
 ```caddy
 gym.example.com {
     reverse_proxy localhost:8080
