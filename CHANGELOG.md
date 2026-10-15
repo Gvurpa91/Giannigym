@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+### GianniGym — new name, new look
+
+- The app is now **GianniGym**: title, home-screen name, icon, sign-in screen, notifications,
+  backup and plan file names. Upstream remains openGym (AGPL v3, see NOTICE.md); share and
+  backup files keep their `opengym_*` keys so they stay compatible both ways. Translated
+  strings that name the product are re-branded on the way out of `t()`, so the twelve locale
+  packs are untouched.
+- **A sporty, high-energy design.** Cold near-black surfaces with a faint accent wash at the
+  top of every screen, a new default accent — *volt*, an electric lime-yellow with black type —
+  heavier, tighter titles, tracked uppercase section labels in the accent, outlined cards and
+  list rows, gradient primary buttons with a glow, bold uppercase tags, a larger start button,
+  thicker progress bars. Light theme keeps the same character on light surfaces. All existing
+  accents and both themes remain available in Settings.
+- New app icons (512 and 180 px), rendered from the same palette.
+
 ### Program builder (no AI)
 
 - 📋 **Build my program.** Answer five questions — goal (strength, muscle, fat loss, general

@@ -18,22 +18,24 @@
 
 /* ---------------------------------------------------------------- tokens -- */
 :root {
-  /* surfaces — dark is the default */
-  --bg:        #000000;
-  --bg-el:     #0e0e10;   /* elevated backdrop (sheets, bars) */
-  --surface:   #1c1c1e;   /* card / grouped-list fill */
-  --surface-2: #2c2c2e;   /* pressed + nested fill */
-  --surface-3: #3a3a3c;   /* controls (segmented track, switch off) */
+  /* surfaces — dark is the default. A cold, slightly blue near-black rather than pure
+     black: pure black flattens every card into the page, this keeps a little depth. */
+  --bg:        #07080c;
+  --bg-el:     #0d0f15;   /* elevated backdrop (sheets, bars) */
+  --surface:   #13161d;   /* card / grouped-list fill */
+  --surface-2: #1d2129;   /* pressed + nested fill */
+  --surface-3: #2a2f3a;   /* controls (segmented track, switch off) */
 
   /* text */
   --label:     #ffffff;
-  --label-2:   rgba(235,235,245,.60);
-  --label-3:   rgba(235,235,245,.32);
-  --label-4:   rgba(235,235,245,.18);
+  --label-2:   rgba(226,231,240,.64);
+  --label-3:   rgba(226,231,240,.36);
+  --label-4:   rgba(226,231,240,.20);
 
   /* lines */
-  --sep:       rgba(84,84,88,.60);
-  --sep-op:    rgba(84,84,88,.34);   /* for edges sitting over blur */
+  --sep:       rgba(120,130,150,.40);
+  --sep-op:    rgba(120,130,150,.26);   /* for edges sitting over blur */
+  --line:      rgba(255,255,255,.065);  /* card outline: definition without a border look */
   --hair:      .5px;
 
   /* system palette (iOS dark values) */
@@ -41,17 +43,20 @@
   --yellow:#ffd60a; --teal:#40c8e0; --indigo:#5e5ce6; --pink:#ff375f;
   --purple:#bf5af2; --mint:#63e6e2; --brown:#ac8e68; --grey:#8e8e93;
 
-  /* accent (per-account, synced) */
-  --acc:  var(--green);
-  --acc-2:#248a3d;
+  /* accent (per-account, synced) — "volt" is the default: an electric lime-yellow that
+     reads as energy against the cold dark surfaces, with black type on top. */
+  --volt:#c8ff2e;
+  --acc:  var(--volt);
+  --acc-2:#9ed400;
   --on-acc:#000000;
   --acc-soft: color-mix(in srgb, var(--acc) 16%, transparent);
   --acc-line: color-mix(in srgb, var(--acc) 38%, transparent);
+  --acc-glow: 0 10px 30px -8px color-mix(in srgb, var(--acc) 70%, transparent);
 
-  /* geometry */
-  --r-sm:8px; --r:12px; --r-lg:16px; --r-xl:22px; --r-card:14px;
+  /* geometry — tighter radii than before: sharper corners read as faster */
+  --r-sm:8px; --r:10px; --r-lg:14px; --r-xl:20px; --r-card:14px;
   --pad:16px;
-  --icon-stroke:1.7;
+  --icon-stroke:1.8;
 
   /* motion */
   --ease:cubic-bezier(.32,.72,0,1);
@@ -62,19 +67,22 @@
 }
 
 :root[data-theme="light"] {
-  --bg:        #f2f2f7;
-  --bg-el:     #f7f7fa;
+  --bg:        #f3f4f6;
+  --bg-el:     #f8f9fb;
   --surface:   #ffffff;
-  --surface-2: #ececef;
-  --surface-3: #e3e3e8;
+  --surface-2: #eceef2;
+  --surface-3: #e1e4ea;
 
-  --label:     #000000;
-  --label-2:   rgba(60,60,67,.60);
-  --label-3:   rgba(60,60,67,.30);
-  --label-4:   rgba(60,60,67,.16);
+  --label:     #0b0d12;
+  --label-2:   rgba(40,46,60,.64);
+  --label-3:   rgba(40,46,60,.34);
+  --label-4:   rgba(40,46,60,.18);
 
-  --sep:       rgba(60,60,67,.29);
-  --sep-op:    rgba(60,60,67,.20);
+  --sep:       rgba(40,46,60,.22);
+  --sep-op:    rgba(40,46,60,.16);
+  --line:      rgba(10,13,20,.07);
+  --volt:#a6dd00;
+  --acc-2:#86b800;
 
   --blue:#007aff; --green:#34c759; --red:#ff3b30; --orange:#ff9500;
   --yellow:#ffcc00; --teal:#30b0c7; --indigo:#5856d6; --pink:#ff2d55;
@@ -83,7 +91,8 @@
   --on-acc:#ffffff;
 }
 
-/* accents — Apple's system colours, so a recolour never looks off-system */
+/* accents — volt is ours; the rest are Apple's system colours, so a recolour never looks off-system */
+:root[data-accent="volt"]  { --acc:var(--volt);   --on-acc:#000 }
 :root[data-accent="lime"]  { --acc:var(--green);  --acc-2:#248a3d; --on-acc:#000 }
 :root[data-accent="sky"]   { --acc:var(--blue);   --acc-2:#0060df; --on-acc:#fff }
 :root[data-accent="orange"]{ --acc:var(--orange); --acc-2:#c76b00; --on-acc:#000 }
@@ -112,7 +121,12 @@ html{
   -webkit-text-size-adjust:100%;
 }
 body{
-  background:var(--bg);color:var(--label);
+  /* a faint accent wash at the top of every screen — the one decorative gradient in the app */
+  background:
+    radial-gradient(110% 42% at 50% -6%, color-mix(in srgb,var(--acc) 13%,transparent), transparent 70%),
+    var(--bg);
+  background-attachment:fixed;
+  color:var(--label);
   font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Segoe UI',Roboto,system-ui,sans-serif;
   font-size:17px;line-height:1.29;letter-spacing:-.01em;
   min-height:100vh;overscroll-behavior-y:none;overflow-x:clip;
@@ -173,8 +187,20 @@ body.resting #app{padding-bottom:calc(250px + var(--sab))}
 
 /* large title, the way a nav bar does it */
 .hdr{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:8px 0 18px}
-.hdr h1{font-size:34px;line-height:1.06;font-weight:700;letter-spacing:-.028em}
-.hdr .sub{color:var(--label-2);font-size:15px;letter-spacing:-.006em;margin-top:4px}
+.hdr h1{font-size:36px;line-height:1.02;font-weight:800;letter-spacing:-.04em}
+.hdr .sub{color:var(--label-2);font-size:14px;letter-spacing:.01em;margin-top:5px;font-weight:500}
+
+/* sign-in screen wordmark */
+.brand-mark{
+  width:76px;height:76px;border-radius:22px;margin:0 auto;
+  display:flex;align-items:center;justify-content:center;font-size:40px;
+  background:linear-gradient(145deg,var(--acc),var(--acc-2));color:var(--on-acc);
+  box-shadow:var(--acc-glow);
+}
+.brand-name{
+  font-size:44px;font-weight:900;letter-spacing:-.05em;line-height:1;margin:18px 0 8px;
+  text-transform:uppercase;
+}
 
 .iconbtn{
   width:36px;height:36px;border-radius:50%;flex:none;
@@ -185,13 +211,14 @@ body.resting #app{padding-bottom:calc(250px + var(--sab))}
 .iconbtn:active{background:var(--surface-2);transform:scale(.92)}
 .iconbtn.on-ss{background:var(--acc-soft);color:var(--acc)}
 
+/* section labels are eyebrows: small caps-style, tracked, in the accent — the sports-app tell */
 h4.sec{
-  font-size:13px;font-weight:400;letter-spacing:-.004em;color:var(--label-2);
-  text-transform:none;margin:22px 0 8px;padding:0 4px;
+  font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--acc);
+  text-transform:uppercase;margin:24px 0 8px;padding:0 4px;
 }
 .card h2{
-  font-size:13px;font-weight:400;letter-spacing:-.004em;color:var(--label-2);
-  text-transform:none;margin:0 0 12px;
+  font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--acc);
+  text-transform:uppercase;margin:0 0 12px;
 }
 .divider{height:var(--hair);background:var(--sep);margin:14px 0;border:0}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -202,16 +229,17 @@ h4.sec{
 .card{
   background:var(--surface);border-radius:var(--r-card);
   padding:16px;margin-bottom:12px;
+  box-shadow:inset 0 0 0 1px var(--line);
 }
-.card .big{font-size:30px;font-weight:600;letter-spacing:-.026em;line-height:1.1}
+.card .big{font-size:34px;font-weight:800;letter-spacing:-.04em;line-height:1.02}
 
 /* ------------------------------------------------------ inset group list -- */
 .sect{margin-bottom:22px}
 .sect-t{
-  font-size:13px;font-weight:400;color:var(--label-2);
-  letter-spacing:-.004em;padding:0 4px 7px;display:block;
+  font-size:11px;font-weight:700;color:var(--acc);text-transform:uppercase;
+  letter-spacing:.1em;padding:0 4px 7px;display:block;
 }
-.sect-b{background:var(--surface);border-radius:var(--r-card);overflow:hidden}
+.sect-b{background:var(--surface);border-radius:var(--r-card);overflow:hidden;box-shadow:inset 0 0 0 1px var(--line)}
 .sect-f{font-size:13px;color:var(--label-2);padding:7px 4px 0;line-height:1.38}
 
 .lrow{
@@ -230,10 +258,15 @@ h4.sec{
   display:flex;align-items:center;justify-content:center;
   background:var(--tint,var(--acc));color:#fff;
 }
-.lrow-m{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
-.lrow-t{font-size:17px;letter-spacing:-.012em;line-height:1.25}
+/* the title keeps at least 40 % of the row; a long value (Italian policy names, say) gives
+   way with an ellipsis rather than running into it */
+.lrow-m{flex:1 1 auto;min-width:40%;display:flex;flex-direction:column;gap:1px;overflow:hidden}
+.lrow-t{font-size:17px;font-weight:500;letter-spacing:-.012em;line-height:1.25;overflow:hidden;text-overflow:ellipsis}
 .lrow-s{font-size:13px;color:var(--label-2);line-height:1.3}
-.lrow-v{color:var(--label-2);font-size:17px;letter-spacing:-.012em;flex:none}
+.lrow-v{
+  color:var(--label-2);font-size:17px;letter-spacing:-.012em;flex:0 1 auto;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;
+}
 .lrow-c{color:var(--label);font-size:15px;flex:none;--icon-stroke:2.4}
 .lrow-k{color:var(--acc);font-size:17px;flex:none;--icon-stroke:2.4}
 .lrow.danger,.lrow.danger .lrow-t{color:var(--red)}
@@ -250,17 +283,22 @@ h4.sec{
 /* -------------------------------------------------------------- buttons -- */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:7px;width:100%;
-  padding:14px 18px;border-radius:var(--r);font-size:17px;font-weight:600;
-  letter-spacing:-.012em;background:var(--surface-2);color:var(--label);
-  transition:transform var(--fast) var(--ease),background var(--fast),opacity var(--fast);
+  padding:15px 18px;border-radius:var(--r);font-size:16px;font-weight:700;
+  letter-spacing:.01em;background:var(--surface-2);color:var(--label);
+  box-shadow:inset 0 0 0 1px var(--line);
+  transition:transform var(--fast) var(--ease),background var(--fast),opacity var(--fast),box-shadow var(--fast);
 }
-.btn .icn{font-size:19px}
+.btn .icn{font-size:19px;--icon-stroke:2.2}
 .btn:active{transform:scale(.975)}
-.btn.primary{background:var(--acc);color:var(--on-acc)}
-.btn.primary:active{background:var(--acc-2)}
+.btn.primary{
+  background:linear-gradient(180deg,var(--acc),var(--acc-2));color:var(--on-acc);
+  box-shadow:var(--acc-glow);
+}
+.btn.primary:active{background:var(--acc-2);box-shadow:none}
 .btn.tinted{background:var(--acc-soft);color:var(--acc)}
 .btn.danger{background:color-mix(in srgb,var(--red) 15%,transparent);color:var(--red)}
-.btn.ghost,.btn.plain{background:none;color:var(--acc);font-weight:400}
+.btn.ghost,.btn.plain{background:none;color:var(--acc);font-weight:600;box-shadow:none}
+.btn.tinted,.btn.danger{box-shadow:none}
 .btn.ghost:active,.btn.plain:active{background:var(--surface-2)}
 .btn.sm{padding:8px 14px;width:auto;font-size:15px;border-radius:var(--r-sm);gap:5px}
 .btn.sm .icn{font-size:16px}
@@ -279,7 +317,7 @@ h4.sec{
 :root[data-theme="light"] #tabbar{background:rgba(249,249,251,.78)}
 #tabbar button{
   flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
-  color:var(--label-3);font-size:10px;font-weight:500;letter-spacing:.005em;padding-top:3px;
+  color:var(--label-3);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding-top:3px;
   transition:color var(--fast);
 }
 /* The inactive tint is semi-transparent, so wherever two strokes cross inside an
@@ -292,9 +330,10 @@ h4.sec{
 #tabbar button.on .icn{--icon-stroke:2;color:inherit;opacity:1}
 #tabbar button.start{margin-top:-24px}
 #tabbar button.start .cir{
-  width:52px;height:52px;border-radius:50%;background:var(--acc);color:var(--on-acc);
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(160deg,var(--acc),var(--acc-2));color:var(--on-acc);
   display:flex;align-items:center;justify-content:center;position:relative;
-  box-shadow:0 6px 18px -4px color-mix(in srgb,var(--acc) 55%,transparent);
+  box-shadow:0 8px 24px -4px color-mix(in srgb,var(--acc) 70%,transparent),0 0 0 4px var(--bg-el);
   transition:transform var(--fast) var(--ease);
 }
 #tabbar button.start:active .cir{transform:scale(.93)}
@@ -336,7 +375,8 @@ h4.sec{
 .list{display:flex;flex-direction:column;gap:8px}
 .item{
   display:flex;align-items:center;gap:12px;background:var(--surface);
-  border-radius:var(--r-card);padding:10px 12px;min-height:60px;
+  border-radius:var(--r);padding:10px 12px;min-height:60px;
+  box-shadow:inset 0 0 0 1px var(--line);
   transition:background var(--fast);text-align:left;width:100%;
 }
 .item:active{background:var(--surface-2)}
@@ -345,16 +385,16 @@ h4.sec{
   display:flex;align-items:center;justify-content:center;font-size:21px;
   background:var(--surface-2);color:var(--label-2);
 }
-.item .tt{font-size:16px;font-weight:400;line-height:1.25;letter-spacing:-.009em}
+.item .tt{font-size:16px;font-weight:600;line-height:1.25;letter-spacing:-.015em}
 .item .ss{color:var(--label-2);font-size:13px;margin-top:2px}
 .item .grow{flex:1;min-width:0}
 .chev{color:var(--label);flex:none;font-size:15px;--icon-stroke:2.4}
 .tag{
   display:inline-flex;align-items:center;gap:3px;background:var(--surface-2);
-  color:var(--label-2);border-radius:6px;padding:3px 7px;font-size:12px;
-  font-weight:500;text-transform:capitalize;
+  color:var(--label-2);border-radius:6px;padding:3px 8px;font-size:11px;
+  font-weight:700;letter-spacing:.04em;text-transform:uppercase;
 }
-.tag.acc{background:var(--acc-soft);color:var(--acc)}
+.tag.acc{background:var(--acc);color:var(--on-acc)}
 
 /* ---------------------------------------------------------------- chips -- */
 .chips{
@@ -363,12 +403,13 @@ h4.sec{
 }
 .chips::-webkit-scrollbar{display:none}
 .chip{
-  flex:none;padding:6px 13px;border-radius:99px;background:var(--surface);
-  font-size:14px;font-weight:400;color:var(--label);text-transform:capitalize;
-  letter-spacing:-.006em;transition:background var(--fast),color var(--fast);
+  flex:none;padding:7px 13px;border-radius:99px;background:var(--surface);
+  font-size:13px;font-weight:600;color:var(--label);text-transform:capitalize;
+  letter-spacing:0;box-shadow:inset 0 0 0 1px var(--line);
+  transition:background var(--fast),color var(--fast);
 }
 .chip:active{background:var(--surface-2)}
-.chip.on{background:var(--acc);color:var(--on-acc);font-weight:500}
+.chip.on{background:var(--acc);color:var(--on-acc);font-weight:700;box-shadow:none}
 
 /* =========================== CONTROLS ==================================== */
 
@@ -524,8 +565,8 @@ h4.sec{
 .ck.on svg{stroke:var(--on-acc)}
 
 /* ------------------------------------------------------------- workout --- */
-.wprog{height:4px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:16px}
-.wprog i{display:block;height:100%;background:var(--acc);border-radius:99px;transition:width var(--med) var(--ease)}
+.wprog{height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:16px}
+.wprog i{display:block;height:100%;background:var(--acc);border-radius:99px;box-shadow:0 0 12px var(--acc);transition:width var(--med) var(--ease)}
 .exmedia{position:relative;border-radius:var(--r-lg);overflow:hidden;background:#fff;margin-bottom:12px}
 .exmedia img{width:100%;height:320px;object-fit:contain;display:block}
 .exmedia .gifhint,.exmedia .giftoggle{
@@ -576,8 +617,9 @@ h4.sec{
 .setrow.eff3 .stp button{width:23px}
 .setrow.eff3 .stp.eff button{width:20px}
 .setrow.eff3 .stp .num{font-size:14px}
-.setrow.done .n{background:var(--acc);color:var(--on-acc)}
-.setrow.done{opacity:.45}
+.setrow.done .n{background:var(--acc);color:var(--on-acc);box-shadow:0 0 10px color-mix(in srgb,var(--acc) 60%,transparent)}
+.setrow.done{opacity:.5}
+.setrow .n{font-weight:700}
 /* why the next target is what it is (issue #17) */
 .progline{
   display:flex;align-items:flex-start;gap:7px;margin:6px 0 2px;
@@ -614,7 +656,7 @@ h4.sec{
   animation:slideup var(--med) var(--ease);
 }
 @keyframes slideup{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
-#timer .t{font-size:26px;font-weight:600;letter-spacing:-.026em;font-variant-numeric:tabular-nums;min-width:66px}
+#timer .t{font-size:30px;font-weight:800;letter-spacing:-.04em;font-variant-numeric:tabular-nums;min-width:74px}
 #timer .bar{flex:1;height:4px;background:var(--surface-3);border-radius:99px;overflow:hidden}
 #timer .bar i{display:block;height:100%;background:var(--acc);transition:width 1s linear}
 /* rest variant: −15/+15/Skip and the clock won't share one line on a phone, so the clock and
@@ -654,7 +696,7 @@ h4.sec{
 :root[data-theme="light"] .sheet{background:var(--bg)}
 @keyframes sheetup{from{transform:translateY(100%)}to{transform:none}}
 .sheet .grab{width:36px;height:5px;border-radius:99px;background:var(--label-4);margin:6px auto 14px}
-.sheet h3{font-size:20px;font-weight:600;letter-spacing:-.021em;margin-bottom:14px}
+.sheet h3{font-size:22px;font-weight:800;letter-spacing:-.03em;margin-bottom:14px}
 .center{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   width:min(84vw,300px);background:var(--bg-el);border-radius:var(--r-lg);padding:20px;
@@ -709,7 +751,7 @@ h4.sec{
 }
 .bw-pm:active{background:var(--surface-2);transform:scale(.92)}
 .bw-read{
-  font-size:52px;font-weight:600;letter-spacing:-.035em;min-width:158px;text-align:center;
+  font-size:56px;font-weight:800;letter-spacing:-.045em;min-width:158px;text-align:center;
   font-variant-numeric:tabular-nums;line-height:1;
 }
 .bw-read .u{font-size:19px;color:var(--label-2);font-weight:400;letter-spacing:-.01em}
@@ -786,20 +828,20 @@ h4.sec{
 .mrow .v{font-size:12px;color:var(--label-2);min-width:52px;text-align:right;flex:none}
 /* A headline number inside a card — tile weight without a tile around it, for the pair of
    readings at the top of the effort card. */
-.stat-v{font-size:26px;font-weight:600;letter-spacing:-.026em;line-height:1.1}
+.stat-v{font-size:30px;font-weight:800;letter-spacing:-.04em;line-height:1.05}
 .mchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
 .mchip{font-size:12px;padding:4px 9px;border-radius:99px;background:var(--surface-2);color:var(--label-2)}
 .mchip.miss{background:color-mix(in srgb,var(--orange) 16%,transparent);color:var(--orange)}
 
 /* --- stat tiles --- */
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.tile{background:var(--surface);border-radius:var(--r-card);padding:14px}
+.tile{background:var(--surface);border-radius:var(--r-card);padding:14px;box-shadow:inset 0 0 0 1px var(--line)}
 .tile .l{
-  color:var(--label-2);font-size:13px;font-weight:400;letter-spacing:-.004em;
-  text-transform:none;display:flex;align-items:center;gap:5px;
+  color:var(--label-2);font-size:11px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;display:flex;align-items:center;gap:5px;
 }
-.tile .l .icn{font-size:14px;color:var(--label)}
-.tile .v{font-size:26px;font-weight:600;letter-spacing:-.026em;margin-top:5px;line-height:1.1}
+.tile .l .icn{font-size:14px;color:var(--acc)}
+.tile .v{font-size:30px;font-weight:800;letter-spacing:-.04em;margin-top:6px;line-height:1.05}
 .tile.tappable:active{background:var(--surface-2)}
 
 /* --- PR badge --- */
@@ -877,13 +919,15 @@ h4.sec{
 /* --- home: today's session row --- */
 .today-row{
   display:flex;align-items:center;justify-content:space-between;gap:10px;
-  margin-top:12px;padding:12px 14px;border-radius:var(--r);background:var(--surface-2);
+  margin-top:12px;padding:14px 14px;border-radius:var(--r);
+  background:linear-gradient(90deg,color-mix(in srgb,var(--acc) 18%,var(--surface-2)),var(--surface-2) 70%);
+  box-shadow:inset 3px 0 0 var(--acc);
   transition:background var(--fast);width:100%;text-align:left;
 }
 .today-row:active{background:var(--surface-3)}
-.today-row .lbl2{font-size:11px;font-weight:500;letter-spacing:.03em;text-transform:uppercase;color:var(--label-3)}
+.today-row .lbl2{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--acc)}
 .today-row .ttl{
-  font-weight:500;font-size:17px;line-height:1.25;text-transform:capitalize;
+  font-weight:700;font-size:18px;line-height:1.2;text-transform:capitalize;
   letter-spacing:-.012em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;
 }
 

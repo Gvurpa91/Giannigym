@@ -27,14 +27,16 @@ No account on someone else's server, no subscription, no ads. Just `docker compo
 
 <br>
 
-> ### 🤖 This is a fork — it adds the AI Coach
+> ### 🏋️ GianniGym — a personal fork of openGym
 >
-> A fork of [DuarteSantos8/openGym](https://github.com/DuarteSantos8/openGym) that adds one
-> optional feature: an AI that **designs** your training plan and **revises it from what you
-> actually log**, running on your own server under your own provider account.
+> Built on [DuarteSantos8/openGym](https://github.com/DuarteSantos8/openGym) by way of
+> [alexpcosta's AI Coach fork](https://github.com/alexpcosta/openGym). This fork adds a
+> **rule-based program builder** (no AI, no account, no cost — see
+> [docs/PROGRAM_BUILDER.md](docs/PROGRAM_BUILDER.md)), a new name and a sportier design, and
+> keeps the optional AI Coach that **designs** your training plan and **revises it from what
+> you actually log**, running on your own server under your own provider account.
 >
-> Everything else is upstream openGym. With the Coach switched off, this is byte-for-byte the
-> app it forked from.
+> Everything else is upstream openGym, under the same AGPL v3 licence.
 >
 > **→ [What it does and how to use it](docs/AI_COACH.md)** ·
 > [Claude setup](Claude-setup-instructions.md) ·
