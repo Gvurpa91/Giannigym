@@ -1,26 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="660" height="190" viewBox="0 0 660 190" role="img" aria-label="openGym — self-hosted gym & body-weight tracker">
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="190" viewBox="0 0 660 190" role="img" aria-label="GianniGym — il tuo programma, la tua palestra, i tuoi dati">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#12151b"/>
-      <stop offset="1" stop-color="#0c0e12"/>
+    <radialGradient id="bg" cx="50%" cy="-10%" r="90%">
+      <stop offset="0" stop-color="#2a3140"/>
+      <stop offset="0.7" stop-color="#07080c"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#c8ff2e" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#c8ff2e" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#c8ff2e"/>
+      <stop offset="1" stop-color="#9ed400"/>
     </linearGradient>
   </defs>
   <rect width="660" height="190" rx="22" fill="url(#bg)"/>
   <rect x="1.5" y="1.5" width="657" height="187" rx="20.5" fill="none" stroke="#2b3140" stroke-width="3"/>
+  <ellipse cx="128" cy="120" rx="110" ry="60" fill="url(#glow)"/>
 
-  <!-- dumbbell mark (centered to the text block) -->
-  <g transform="translate(122,96) scale(0.8)" fill="#a3e635">
-    <rect x="-72" y="-10" width="144" height="20" rx="7"/>
-    <rect x="-80" y="-36" width="20" height="72" rx="7"/>
-    <rect x="-104" y="-25" width="17" height="50" rx="7"/>
-    <rect x="60"  y="-36" width="20" height="72" rx="7"/>
-    <rect x="87"  y="-25" width="17" height="50" rx="7"/>
-  </g>
+  <!-- GG mark -->
+  <text x="128" y="108" text-anchor="middle" font-family="Inter, 'Inter Display', -apple-system, 'Segoe UI', system-ui, sans-serif" font-size="92" font-weight="900" letter-spacing="-6" fill="#ffffff">G<tspan fill="#c8ff2e">G</tspan></text>
+  <rect x="58" y="140" width="140" height="12" rx="6" fill="url(#bar)"/>
+  <rect x="54" y="132" width="14" height="28" rx="3" fill="#ffffff"/>
+  <rect x="188" y="132" width="14" height="28" rx="3" fill="#ffffff"/>
 
-  <!-- wordmark + tagline -->
-  <text x="224" y="86" font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif" font-size="62" font-weight="800" letter-spacing="-2">
-    <tspan fill="#eef1f6">open</tspan><tspan fill="#a3e635">Gym</tspan>
-  </text>
-  <text x="226" y="120" font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif" font-size="20.5" font-weight="600" fill="#8b94a7">Self-hosted gym &amp; body-weight tracker</text>
-  <text x="226" y="146" font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif" font-size="14" font-weight="500" fill="#5c6475">passkey login  ·  own your data  ·  docker  ·  AGPL</text>
+  <!-- wordmark -->
+  <text x="250" y="92" font-family="Inter, 'Inter Display', -apple-system, 'Segoe UI', system-ui, sans-serif" font-size="58" font-weight="800" letter-spacing="-2.5" fill="#ffffff">Gianni<tspan fill="#c8ff2e">Gym</tspan></text>
+  <text x="252" y="128" font-family="Inter, -apple-system, 'Segoe UI', system-ui, sans-serif" font-size="13" font-weight="700" letter-spacing="2.2" fill="#c8ff2e">IL TUO PROGRAMMA · I TUOI DATI</text>
+  <text x="252" y="154" font-family="Inter, -apple-system, 'Segoe UI', system-ui, sans-serif" font-size="14" fill="#9aa3b5">Programmi su misura · diario serie e pesi · progressione</text>
 </svg>

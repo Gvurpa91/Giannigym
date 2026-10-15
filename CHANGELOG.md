@@ -4,6 +4,12 @@
 
 ### GianniGym — new name, new look
 
+- **Native apps and README carry the brand too.** Android launcher icons (legacy, round and
+  adaptive layers), Android and iOS splash screens and the iOS app icon are regenerated from
+  the same GianniGym mark as the PWA icon; the Capacitor app name, Android strings and iOS
+  display name read GianniGym (bundle ids are unchanged, so an installed build updates in
+  place). The README is rewritten in Italian around what the fork does, with a new banner and
+  screenshots of the current design, and `.env.example` defaults `RP_NAME` to GianniGym.
 - The app is now **GianniGym**: title, home-screen name, icon, sign-in screen, notifications,
   backup and plan file names. Upstream remains openGym (AGPL v3, see NOTICE.md); share and
   backup files keep their `opengym_*` keys so they stay compatible both ways. Translated
