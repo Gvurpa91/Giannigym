@@ -17,6 +17,39 @@ Cosa serve:
 > Tutto quello che segue va eseguito **sul VPS**, dopo esserti collegato con
 > `ssh root@IP_DEL_VPS`.
 
+## 0. Se usi Oracle Cloud "Always Free" (0 €)
+
+Oracle regala a tempo indefinito una macchina ARM (shape Ampere A1). Nel 2026 il limite gratuito
+è di 2 OCPU e 12 GB di RAM in totale: una istanza da **1 OCPU e 6 GB** è più che sufficiente.
+Differenze rispetto a un VPS normale, da tenere presenti mentre segui la guida:
+
+- **Registrazione**: https://www.oracle.com/cloud/free/. Chiede una carta ma non addebita
+  nulla finché resti nei limiti gratuiti. La "home region" (scegli **Milan** o **Frankfurt**) non
+  si cambia più dopo.
+- **Creazione**: Compute → Instances → Create instance. Image **Ubuntu 24.04** (aarch64),
+  shape **Ampere → VM.Standard.A1.Flex** con 1 OCPU e 6 GB, IP pubblico assegnato. In "Add SSH
+  keys" scegli **Generate a key pair** e scarica la chiave privata: è l'unico modo per entrare.
+  Se compare "Out of host capacity", riprova più tardi o cambia availability domain.
+- **Accesso**: l'utente è `ubuntu`, non `root`, con la chiave scaricata:
+  `ssh -i ~/Downloads/ssh-key-XXXX.key ubuntu@IP` (su Windows funziona uguale in PowerShell;
+  se la chiave viene rifiutata per permessi troppo aperti, su Mac/Linux `chmod 600` sul file).
+  Tutti i comandi della guida vanno preceduti da `sudo`, oppure entra una volta con `sudo -i`.
+- **Firewall, due livelli.** Oracle blocca tutto tranne SSH sia nella rete virtuale sia dentro
+  la macchina, e `ufw` non basta:
+  1. Nel pannello: Networking → Virtual cloud networks → la tua VCN → Security Lists →
+     Default Security List → **Add Ingress Rules**. Aggiungi tre regole con Source
+     `0.0.0.0/0`: TCP porta 80, TCP porta 443, UDP porta 443.
+  2. Dentro la macchina, al posto dei comandi `ufw` della sezione 2:
+     ```bash
+     sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT
+     sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 443 -j ACCEPT
+     sudo iptables -I INPUT 6 -m state --state NEW -p udp --dport 443 -j ACCEPT
+     sudo netfilter-persistent save
+     ```
+- **Inattività**: Oracle si riserva di recuperare le istanze gratuite inattive. Usare l'app
+  regolarmente basta; in ogni caso tieni il backup della cartella `data` (sezione 7): con quello
+  ricrei tutto altrove in dieci minuti, mantenendo lo stesso dominio e quindi le stesse passkey.
+
 ## 1. DNS
 
 Nel pannello del tuo dominio crea un record **A** che punti `gym.tuodominio.it` all'indirizzo
@@ -38,7 +71,7 @@ docker compose version      # deve stampare una versione 2.x o superiore
 ```
 
 Apri le porte necessarie se il VPS ha un firewall (Ubuntu usa `ufw`; molti fornitori hanno
-anche un firewall nel pannello web, da aprire allo stesso modo):
+anche un firewall nel pannello web, da aprire allo stesso modo; su Oracle vedi la sezione 0):
 
 ```bash
 ufw allow OpenSSH
