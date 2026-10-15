@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+### Program builder (no AI)
+
+- 📋 **Build my program.** Answer five questions — goal (strength, muscle, fat loss, general
+  fitness, endurance), experience, days a week, session length, equipment — plus a list of
+  exercises to leave out, and get a complete weekly plan: the split that fits your days (full
+  body A/B for two days, upper/lower for four, push/pull/legs for six), compounds first, sets
+  and reps by goal, a progression policy per exercise, supersets when time is short, a
+  conditioning finisher when the goal calls for one. Every pick says why it is there and offers
+  alternatives; swap or remove anything before applying, then fine-tune in the Plan tab. It is
+  deterministic, runs entirely on the device, needs no account and no AI provider, and says
+  plainly that no exercise burns belly fat on its own. **[Guide →](docs/PROGRAM_BUILDER.md)**
+- The intake wizard is now shared between the builder and the AI Coach, so answers given to
+  one are the starting point for the other.
+- Fixed: five API tests used fixed dates that fell out of the 12-week review window; fixtures
+  are now relative to today.
+
 ### The AI Coach
 
 openGym could always progress a plan. It could never *write* one, and it never looked at the
