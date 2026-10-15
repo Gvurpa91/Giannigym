@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/banner.png" alt="GianniGym" width="720">
+<img src="assets/giannigym-banner.png" alt="GianniGym" width="720">
 
 <br>
 
@@ -29,14 +29,14 @@ sala serie per serie, ricorda cosa hai sollevato l'ultima volta e alza i carichi
 <div align="center">
 <table>
 <tr>
-<td align="center"><img src="assets/screenshots/home.png" alt="Home" width="230"><br><sub><b>Home</b> — l'allenamento di oggi</sub></td>
-<td align="center"><img src="assets/screenshots/builder.png" alt="Generatore" width="230"><br><sub><b>Generatore</b> — il programma spiegato</sub></td>
-<td align="center"><img src="assets/screenshots/workout.png" alt="Allenamento" width="230"><br><sub><b>Allenamento</b> — serie, pesi, timer</sub></td>
+<td align="center"><img src="assets/screenshots/giannigym-home.png" alt="Home" width="230"><br><sub><b>Home</b> — l'allenamento di oggi</sub></td>
+<td align="center"><img src="assets/screenshots/giannigym-builder.png" alt="Generatore" width="230"><br><sub><b>Generatore</b> — il programma spiegato</sub></td>
+<td align="center"><img src="assets/screenshots/giannigym-workout.png" alt="Allenamento" width="230"><br><sub><b>Allenamento</b> — serie, pesi, timer</sub></td>
 </tr>
 <tr>
-<td align="center"><img src="assets/screenshots/plan.png" alt="Piano" width="230"><br><sub><b>Piano</b> — la settimana</sub></td>
-<td align="center"><img src="assets/screenshots/stats.png" alt="Statistiche" width="230"><br><sub><b>Statistiche</b> — progressi e record</sub></td>
-<td align="center"><img src="assets/screenshots/home-light.png" alt="Tema chiaro" width="230"><br><sub><b>Tema chiaro</b> — stesso stile, di giorno</sub></td>
+<td align="center"><img src="assets/screenshots/giannigym-plan.png" alt="Piano" width="230"><br><sub><b>Piano</b> — la settimana</sub></td>
+<td align="center"><img src="assets/screenshots/giannigym-stats.png" alt="Statistiche" width="230"><br><sub><b>Statistiche</b> — progressi e record</sub></td>
+<td align="center"><img src="assets/screenshots/giannigym-home-light.png" alt="Tema chiaro" width="230"><br><sub><b>Tema chiaro</b> — stesso stile, di giorno</sub></td>
 </tr>
 </table>
 </div>
