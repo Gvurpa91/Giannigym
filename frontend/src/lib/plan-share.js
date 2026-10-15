@@ -12,6 +12,7 @@ import { EXIDX } from './exercises.js'
 import { modeOf, fmtSec } from './history.js'
 import { uid, todayISO, DAYN, fmtNum, exCount } from './format.js'
 import { t } from './i18n.js'
+import { APP_NAME } from './brand.js'
 
 const PLAN_FMT = 1
 const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0]   // Mon-first, matching the Plan screen
@@ -243,7 +244,7 @@ export function planPrintHTML(S, owner) {
 </style></head>
 <body><div class="doc">
   <header>
-    <div class="kicker">openGym</div>
+    <div class="kicker">${esc(APP_NAME)}</div>
     <h1>${esc(t('Weekly Training Plan'))}</h1>
     ${sub ? `<div class="sub">${sub}</div>` : ''}
   </header>
@@ -251,7 +252,7 @@ export function planPrintHTML(S, owner) {
   ${weekHTML(S)}
   <h3 class="block">${esc(t('Routines'))}</h3>
   ${body}
-  <footer>${esc(t('Made with openGym'))} · opengym.duarte-santos.ch</footer>
+  <footer>${esc(t('Made with openGym'))}</footer>
 </div></body></html>`
 }
 

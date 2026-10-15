@@ -2,6 +2,37 @@
 
 ## Unreleased
 
+### GianniGym — new name, new look
+
+- The app is now **GianniGym**: title, home-screen name, icon, sign-in screen, notifications,
+  backup and plan file names. Upstream remains openGym (AGPL v3, see NOTICE.md); share and
+  backup files keep their `opengym_*` keys so they stay compatible both ways. Translated
+  strings that name the product are re-branded on the way out of `t()`, so the twelve locale
+  packs are untouched.
+- **A sporty, high-energy design.** Cold near-black surfaces with a faint accent wash at the
+  top of every screen, a new default accent — *volt*, an electric lime-yellow with black type —
+  heavier, tighter titles, tracked uppercase section labels in the accent, outlined cards and
+  list rows, gradient primary buttons with a glow, bold uppercase tags, a larger start button,
+  thicker progress bars. Light theme keeps the same character on light surfaces. All existing
+  accents and both themes remain available in Settings.
+- New app icons (512 and 180 px), rendered from the same palette.
+
+### Program builder (no AI)
+
+- 📋 **Build my program.** Answer five questions — goal (strength, muscle, fat loss, general
+  fitness, endurance), experience, days a week, session length, equipment — plus a list of
+  exercises to leave out, and get a complete weekly plan: the split that fits your days (full
+  body A/B for two days, upper/lower for four, push/pull/legs for six), compounds first, sets
+  and reps by goal, a progression policy per exercise, supersets when time is short, a
+  conditioning finisher when the goal calls for one. Every pick says why it is there and offers
+  alternatives; swap or remove anything before applying, then fine-tune in the Plan tab. It is
+  deterministic, runs entirely on the device, needs no account and no AI provider, and says
+  plainly that no exercise burns belly fat on its own. **[Guide →](docs/PROGRAM_BUILDER.md)**
+- The intake wizard is now shared between the builder and the AI Coach, so answers given to
+  one are the starting point for the other.
+- Fixed: five API tests used fixed dates that fell out of the 12-week review window; fixtures
+  are now relative to today.
+
 ### The AI Coach
 
 openGym could always progress a plan. It could never *write* one, and it never looked at the

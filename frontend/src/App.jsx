@@ -27,15 +27,16 @@ import Admin from './views/Admin.jsx'
 import Coach from './views/Coach.jsx'
 import CoachIntake from './views/CoachIntake.jsx'
 import CoachProposal from './views/CoachProposal.jsx'
+import ProgramBuilder from './views/ProgramBuilder.jsx'
 
 bindUI(useUI)   // lets the shared controls open sheets without importing the store at module scope
 
 function applyPrefs(theme, accent) {
   const de = document.documentElement
   de.dataset.theme = theme === 'light' ? 'light' : 'dark'
-  de.dataset.accent = ACCENTS[accent] ? accent : 'lime'
+  de.dataset.accent = ACCENTS[accent] ? accent : 'volt'
   const meta = document.querySelector('meta[name="theme-color"]')
-  if (meta) meta.content = de.dataset.theme === 'light' ? '#f2f2f7' : '#000000'
+  if (meta) meta.content = de.dataset.theme === 'light' ? '#f3f4f6' : '#07080c'
 }
 
 function Shell() {
@@ -73,6 +74,7 @@ function Shell() {
               <Route path="/home" element={<Home />} />
               <Route path="/plan" element={<Plan />} />
               <Route path="/plan/r/:id" element={<RoutineEdit />} />
+              <Route path="/builder" element={<ProgramBuilder />} />
               <Route path="/workout" element={<Workout />} />
               <Route path="/stats" element={<Stats />} />
               <Route path="/history" element={<History />} />

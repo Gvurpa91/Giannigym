@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useStore, DEF, hasData } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { ACCENTS, todayISO, localTZ } from '../lib/format.js'
+import { FILE_PREFIX } from '../lib/brand.js'
 import { effortOf } from '../lib/history.js'
 import { webauthnOK, passkeyLogin, passkeyRegister, IS_ANDROID } from '../lib/api.js'
 import { pushSupported, enablePush, disablePush, sendTestPush } from '../lib/push.js'
@@ -29,7 +30,7 @@ export default function Settings() {
 
   const doExport = async () => {
     const json = JSON.stringify(S, null, 2)
-    const name = 'opengym-backup-' + todayISO() + '.json'
+    const name = FILE_PREFIX + '-backup-' + todayISO() + '.json'
     // WKWebView can't download blob URLs — the native build hands the file to the share sheet.
     if (MOBILE) {
       try { await shareExport(json, name); toast(t('Backup exported')) } catch (e) { /* share sheet dismissed */ }
@@ -178,7 +179,7 @@ export default function Settings() {
         <span className="lrow-t">{t('Accent color')}</span>
         <div className="swatches">
           {Object.entries(ACCENTS).map(([k, c]) => (
-            <button key={k} className={'swatch' + ((S.accent || 'lime') === k ? ' on' : '')}
+            <button key={k} className={'swatch' + ((S.accent || 'volt') === k ? ' on' : '')}
               style={{ background: c }} onClick={() => update(s => { s.accent = k })} aria-label={k} />
           ))}
         </div>

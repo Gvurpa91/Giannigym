@@ -27,6 +27,7 @@ export default function Plan() {
   return <>
     <div className="hdr">
       <div><h1>{t('Plan')}</h1><div className="sub">{t('Your weekly routine')}</div></div>
+      <button className="iconbtn" onClick={() => nav('/builder')} aria-label={t('Build my program')} title={t('Build my program')}><Icon name="clipboard" /></button>
       {coachOn && <button className="iconbtn" onClick={() => nav('/coach')} aria-label={t('Coach')} title={t('Coach')}><Icon name="sparkles" /></button>}
       <button className="iconbtn" onClick={planToolsSheet} aria-label={t('Share your plan')} title={t('Share your plan')}><Icon name="upload" /></button>
     </div>
@@ -50,7 +51,9 @@ export default function Plan() {
         <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
         <div className="grow"><div className="tt">{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
         <Icon name="chevronRight" className="chev" /></div>)}</div> : <>
-        <div className="empty"><div className="ico"><Icon name="clipboard" /></div>{t('No routines yet.')}<br />{t('Create one or load the starter plan.')}</div>
+        <div className="empty"><div className="ico"><Icon name="clipboard" /></div>{t('No routines yet.')}<br />{t('Answer a few questions and get a plan that fits your week, or load the starter plan.')}</div>
+        <Button variant="primary" icon="clipboard" onClick={() => nav('/builder')}>{t('Build my program')}</Button>
+        <div style={{ height: 8 }} />
         <Button icon="sparkles" onClick={loadStarterPlan}>{t('Load starter plan (Push / Pull / Legs)')}</Button>
       </>}
     </div></div>

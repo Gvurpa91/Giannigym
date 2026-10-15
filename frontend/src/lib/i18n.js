@@ -4,6 +4,7 @@
 // Exercise instructions come from separately generated packs in src/instr/ (one per
 // language, from the upstream dataset) — also lazy-loaded on language switch.
 import { useSyncExternalStore } from 'react'
+import { APP_NAME, UPSTREAM_NAME } from './brand.js'
 
 // UI languages. de/pt have no instruction pack upstream — instructions fall back to English.
 export const LANGS = {
@@ -31,10 +32,12 @@ export const getLang = () => lang
 export const dateLocale = () => DATE_LOCALES[lang] || 'en-GB'
 
 // Translate a source string; {0},{1}… are replaced with args (also on the English fallback).
+// The upstream product name inside a string is swapped for this fork's on the way out, so
+// the keys (and the twelve locale packs) stay shared with upstream while the screen says ours.
 export function t(s, ...args) {
   let v = dict[s] || s
   for (let i = 0; i < args.length; i++) v = v.replaceAll('{' + i + '}', args[i])
-  return v
+  return v.includes(UPSTREAM_NAME) ? v.replaceAll(UPSTREAM_NAME, APP_NAME) : v
 }
 // Instructions for an exercise in the current language (English steps as fallback).
 export const instrFor = ex => (instr && instr[ex.id]) || ex.st || []
