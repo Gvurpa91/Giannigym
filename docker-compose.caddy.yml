@@ -1,0 +1,30 @@
+# HTTPS in one step: Caddy in front of the web container, with a Let's Encrypt certificate
+# obtained and renewed automatically for DOMAIN.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.caddy.yml up -d --build
+#
+# Needs in .env:   DOMAIN=gym.example.com   RP_ID=gym.example.com   ORIGIN=https://gym.example.com
+#                  WEB_BIND=127.0.0.1   (so port 8080 is not reachable from the internet)
+# Needs on the host: ports 80 and 443 open, and a DNS A/AAAA record for DOMAIN → this server.
+# Guide: docs/DEPLOY_VPS.md
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      web:
+        condition: service_started
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"     # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data        # certificates and account keys — keep across restarts
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

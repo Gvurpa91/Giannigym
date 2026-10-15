@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### HTTPS in one command
+
+- `docker-compose.caddy.yml` + `Caddyfile`: an optional Caddy reverse proxy that obtains and
+  renews a Let's Encrypt certificate for `DOMAIN` and fronts the web container, so a VPS
+  deployment with working passkeys is `docker compose -f docker-compose.yml -f
+  docker-compose.caddy.yml up -d --build`. New `WEB_BIND` variable keeps the plain-HTTP port
+  on localhost behind it. Step-by-step guide in `docs/DEPLOY_VPS.md`.
+
 ### GianniGym — new name, new look
 
 - **Native apps and README carry the brand too.** Android launcher icons (legacy, round and
