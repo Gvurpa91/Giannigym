@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+### Exercise notes and touch-friendly filters
+
+- **A note on every exercise.** During a workout each exercise shows an "Add note" button;
+  what you write ("seat on 4, grip wide") is kept per exercise and shown again, highlighted
+  under the name, every time that exercise comes round. Finishing a workout stamps the note
+  in force onto that workout's entry, so history keeps what you had written then. Notes live
+  in synced state (`exNotes`), travel with backups, and are not sent to the AI Coach.
+- **Filters built for thumbs.** The exercise picker and the library replace the two
+  sideways-scrolling chip strips (body part, equipment) with two large buttons that open a
+  vertical list with a count per option. In the picker, search and filters stay pinned while
+  the list scrolls. Bottom sheets now decide a gesture's direction before reacting, so a
+  sideways swipe inside a sheet no longer drags the sheet down.
+
 ### HTTPS in one command
 
 - `docker-compose.caddy.yml` + `Caddyfile`: an optional Caddy reverse proxy that obtains and

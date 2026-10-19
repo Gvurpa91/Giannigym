@@ -784,4 +784,12 @@ export default {
   'Home: dumbbells': 'Dom: hantle',
   'Home: body weight': 'Dom: masa ciała',
   'Home: bands': 'Dom: gumy',
+  // Exercise notes
+  'Add note': 'Dodaj notatkę',
+  'Save note': 'Zapisz notatkę',
+  'Note saved': 'Notatka zapisana',
+  'Note deleted': 'Notatka usunięta',
+  'It comes back every time you do this exercise.': 'Pojawi się za każdym razem, gdy robisz to ćwiczenie.',
+  'e.g. seat on 4, grip wide, go lighter on the left shoulder': 'np. siedzisko na 4, szeroki chwyt, lżej na lewy bark',
+  'Body part': 'Partia ciała',
 }

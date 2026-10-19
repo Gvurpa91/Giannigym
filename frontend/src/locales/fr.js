@@ -784,4 +784,12 @@ export default {
   'Home: dumbbells': 'Maison : haltères',
   'Home: body weight': 'Maison : poids du corps',
   'Home: bands': 'Maison : élastiques',
+  // Exercise notes
+  'Add note': 'Ajouter une note',
+  'Save note': 'Enregistrer la note',
+  'Note saved': 'Note enregistrée',
+  'Note deleted': 'Note supprimée',
+  'It comes back every time you do this exercise.': 'Elle réapparaît chaque fois que vous faites cet exercice.',
+  'e.g. seat on 4, grip wide, go lighter on the left shoulder': 'ex. siège sur 4, prise large, plus léger pour l’épaule gauche',
+  'Body part': 'Partie du corps',
 }

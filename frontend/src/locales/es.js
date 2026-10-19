@@ -784,4 +784,12 @@ export default {
   'Home: dumbbells': 'Casa: mancuernas',
   'Home: body weight': 'Casa: peso corporal',
   'Home: bands': 'Casa: bandas',
+  // Exercise notes
+  'Add note': 'Añadir nota',
+  'Save note': 'Guardar nota',
+  'Note saved': 'Nota guardada',
+  'Note deleted': 'Nota eliminada',
+  'It comes back every time you do this exercise.': 'Aparece cada vez que haces este ejercicio.',
+  'e.g. seat on 4, grip wide, go lighter on the left shoulder': 'p. ej. asiento en 4, agarre ancho, más ligero por el hombro izquierdo',
+  'Body part': 'Parte del cuerpo',
 }

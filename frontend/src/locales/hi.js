@@ -784,4 +784,12 @@ export default {
   'Home: dumbbells': 'घर: डम्बल',
   'Home: body weight': 'घर: बॉडीवेट',
   'Home: bands': 'घर: बैंड',
+  // Exercise notes
+  'Add note': 'नोट जोड़ें',
+  'Save note': 'नोट सहेजें',
+  'Note saved': 'नोट सहेजा गया',
+  'Note deleted': 'नोट हटाया गया',
+  'It comes back every time you do this exercise.': 'जब भी आप यह एक्सरसाइज़ करेंगे, यह फिर दिखेगा।',
+  'e.g. seat on 4, grip wide, go lighter on the left shoulder': 'जैसे: सीट 4 पर, चौड़ी पकड़, बाएँ कंधे के लिए हल्का वज़न',
+  'Body part': 'शरीर का हिस्सा',
 }
