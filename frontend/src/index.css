@@ -735,6 +735,7 @@ h4.sec{
 }
 :root[data-theme="light"] .sheet{background:var(--bg)}
 @keyframes sheetup{from{transform:translateY(100%)}to{transform:none}}
+.sheet.locked{padding-top:24px}
 .sheet .grab{width:36px;height:5px;border-radius:99px;background:var(--label-4);margin:6px auto 14px}
 .sheet h3{font-size:22px;font-weight:800;letter-spacing:-.03em;margin-bottom:14px}
 .center{

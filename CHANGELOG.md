@@ -11,6 +11,11 @@
   under 2 px. The ±0.1, ±0.5 and ±1 buttons are unchanged.
 - **200 kg ceiling for body weight and the goal weight** (440 lb). The working-weight
   confirmation after an exercise keeps its wider range, since lifts pass 200 kg.
+### No grab handle on sheets that cannot be swiped away
+
+- Locked sheets — the pre-workout check-in — no longer show the grab handle and no longer
+  move under the finger. The handle promised a swipe-to-close that locked sheets never had,
+  so a swipe just bounced back. The check-in still closes through its own buttons.
 
 ### Flick a sheet away
 
