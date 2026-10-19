@@ -792,4 +792,6 @@ export default {
   'It comes back every time you do this exercise.': 'Volta a aparecer sempre que fizeres este exercício.',
   'e.g. seat on 4, grip wide, go lighter on the left shoulder': 'ex. banco no 4, pega larga, mais leve por causa do ombro esquerdo',
   'Body part': 'Parte do corpo',
+  'Type the weight': 'Escrever o peso',
+  'Tap the number to type it · drag the bar to fine-tune': 'Toca no número para o escrever · arrasta a barra para afinar',
 }

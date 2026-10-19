@@ -136,9 +136,14 @@ export function Stepper({ value, step = 1, onChange, decimal = true, className =
 // Pointer-driven so the fill, track and thumb are all ours — no ::-webkit-*
 // pseudo-elements, which is the only way the control looks identical on every
 // platform and can pick up the accent colour.
-export function Slider({ value, min = 0, max = 100, step = 1, onChange, className = '' }) {
+// `relative` (units per pixel) turns the slider into a fine scrubber: touching it never jumps,
+// and the value moves from where it was by `relative` × the finger's travel. A weight from 1
+// to 200 kg on a phone-wide track is over half a kilo per pixel in absolute mode — impossible
+// to set to the decimal — while 0.05 kg/px makes a 1 kg change a comfortable 20 px swipe.
+export function Slider({ value, min = 0, max = 100, step = 1, onChange, className = '', relative = 0 }) {
   const ref = useRef(null)
   const [drag, setDrag] = useState(false)
+  const anchor = useRef(null)
   const pct = Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100))
 
   const posToValue = useCallback(clientX => {
@@ -156,7 +161,12 @@ export function Slider({ value, min = 0, max = 100, step = 1, onChange, classNam
     if (!drag) return
     const move = e => {
       e.preventDefault()
-      onChange(posToValue(e.touches ? e.touches[0].clientX : e.clientX))
+      const x = e.touches ? e.touches[0].clientX : e.clientX
+      if (relative && anchor.current) {
+        const raw = anchor.current.v + (x - anchor.current.x) * relative
+        const snapped = Math.round(raw / step) * step
+        onChange(Math.min(max, Math.max(min, Math.round(snapped * 1000) / 1000)))
+      } else onChange(posToValue(x))
     }
     const up = () => setDrag(false)
     window.addEventListener('pointermove', move)
@@ -167,7 +177,7 @@ export function Slider({ value, min = 0, max = 100, step = 1, onChange, classNam
       window.removeEventListener('pointerup', up)
       window.removeEventListener('pointercancel', up)
     }
-  }, [drag, onChange, posToValue])
+  }, [drag, onChange, posToValue, relative, min, max, step])
 
   const key = e => {
     const d = e.key === 'ArrowRight' || e.key === 'ArrowUp' ? step
@@ -186,7 +196,11 @@ export function Slider({ value, min = 0, max = 100, step = 1, onChange, classNam
       aria-valuenow={value} aria-valuemin={min} aria-valuemax={max}
       data-nodrag                                  /* keeps the sheet from swipe-dismissing */
       onKeyDown={key}
-      onPointerDown={e => { e.currentTarget.setPointerCapture?.(e.pointerId); setDrag(true); onChange(posToValue(e.clientX)) }}
+      onPointerDown={e => {
+        e.currentTarget.setPointerCapture?.(e.pointerId); setDrag(true)
+        if (relative) anchor.current = { x: e.clientX, v: value }
+        else onChange(posToValue(e.clientX))
+      }}
     >
       <span className="sld-track"><span className="sld-fill" style={{ width: pct + '%' }} /></span>
       <span className="sld-knob" style={{ left: pct + '%' }} />

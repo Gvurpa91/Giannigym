@@ -792,4 +792,6 @@ export default {
   'It comes back every time you do this exercise.': 'Ricompare ogni volta che fai questo esercizio.',
   'e.g. seat on 4, grip wide, go lighter on the left shoulder': 'es. sedile al 4, presa larga, più leggero con la spalla sinistra',
   'Body part': 'Muscoli',
+  'Type the weight': 'Scrivi il peso',
+  'Tap the number to type it · drag the bar to fine-tune': 'Tocca il numero per scriverlo · trascina la barra per regolare',
 }

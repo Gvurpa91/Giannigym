@@ -792,4 +792,6 @@ export default {
   'It comes back every time you do this exercise.': 'Bu egzersizi her yaptığında yeniden görünür.',
   'e.g. seat on 4, grip wide, go lighter on the left shoulder': 'örn. koltuk 4’te, geniş tutuş, sol omuz için daha hafif',
   'Body part': 'Vücut bölgesi',
+  'Type the weight': 'Ağırlığı yaz',
+  'Tap the number to type it · drag the bar to fine-tune': 'Yazmak için sayıya dokun · ince ayar için çubuğu sürükle',
 }

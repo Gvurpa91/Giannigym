@@ -792,4 +792,6 @@ export default {
   'It comes back every time you do this exercise.': 'Pojawi się za każdym razem, gdy robisz to ćwiczenie.',
   'e.g. seat on 4, grip wide, go lighter on the left shoulder': 'np. siedzisko na 4, szeroki chwyt, lżej na lewy bark',
   'Body part': 'Partia ciała',
+  'Type the weight': 'Wpisz wagę',
+  'Tap the number to type it · drag the bar to fine-tune': 'Dotknij liczby, aby ją wpisać · przeciągnij pasek, aby dostroić',
 }

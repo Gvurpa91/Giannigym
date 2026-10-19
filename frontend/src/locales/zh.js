@@ -792,4 +792,6 @@ export default {
   'It comes back every time you do this exercise.': '每次做这个动作时都会显示。',
   'e.g. seat on 4, grip wide, go lighter on the left shoulder': '例如：座椅调到 4，宽握，左肩用轻一点的重量',
   'Body part': '身体部位',
+  'Type the weight': '输入体重',
+  'Tap the number to type it · drag the bar to fine-tune': '点数字可直接输入 · 拖动滑条微调',
 }
