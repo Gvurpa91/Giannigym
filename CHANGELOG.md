@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Flick a sheet away
+
+- Bottom sheets now close on a quick downward flick, not only on a drag of 90 px or more:
+  a short fast swipe used to spring the sheet back. Short sheets need proportionally less
+  travel, and a downward start is claimed immediately so iOS cannot take the gesture over.
+  The decision lives in `lib/gesture.js`, with tests.
+
 ### Exercise notes and touch-friendly filters
 
 - **A note on every exercise.** During a workout each exercise shows an "Add note" button;

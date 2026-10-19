@@ -1,30 +1,39 @@
 import { useEffect, useRef } from 'react'
 import { useUI } from '../store/useUI.js'
+import { shouldDismiss, trackVelocity } from '../lib/gesture.js'
 
 // One bottom sheet (or centered dialog) with swipe-to-dismiss.
 function Sheet({ sheet }) {
   const { closeSheet } = useUI()
   const ref = useRef(null)
-  const drag = useRef({ startY: null, startX: 0, delta: 0, axis: null })
+  const drag = useRef({ startY: null })
 
   const onTouchStart = e => {
     const el = ref.current
     // a gesture that begins on a slider (or opted-out control) belongs to that control,
     // not to the sheet's swipe-to-dismiss — so it keeps working while you drag
     if (e.target.closest && e.target.closest('input[type=range], [data-nodrag]')) {
-      drag.current = { startY: null, delta: 0 }
+      drag.current = { startY: null }
       return
     }
+    const x = e.touches[0].clientX, y = e.touches[0].clientY
     // The axis is decided on the first real movement: a mostly-sideways gesture (a chip row,
     // a carousel) is left alone instead of half-dragging the sheet down while you scroll.
-    drag.current = { startY: el.scrollTop <= 0 ? e.touches[0].clientY : null, startX: e.touches[0].clientX, delta: 0, axis: null }
+    drag.current = { startY: el.scrollTop <= 0 ? y : null, startX: x, delta: 0, axis: null, vel: trackVelocity(null, y, e.timeStamp) }
   }
   const onTouchMove = e => {
     const el = ref.current, d = drag.current
     if (d.startY === null) return
-    const dy = e.touches[0].clientY - d.startY, dx = e.touches[0].clientX - d.startX
+    const y = e.touches[0].clientY
+    const dy = y - d.startY, dx = e.touches[0].clientX - d.startX
+    d.vel = trackVelocity(d.vel, y, e.timeStamp)
     if (!d.axis) {
-      if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return
+      if (Math.abs(dx) < 6 && Math.abs(dy) < 6) {
+        // Claim a downward start right away: if the browser begins its own overscroll here,
+        // iOS stops letting us cancel the rest of the gesture and a quick flick is lost.
+        if (dy > 0 && dy >= Math.abs(dx) && el.scrollTop <= 0) e.preventDefault()
+        return
+      }
       d.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'
     }
     if (d.axis === 'x') { d.startY = null; return }
@@ -39,8 +48,9 @@ function Sheet({ sheet }) {
     const el = ref.current, d = drag.current
     if (d.startY === null) return
     el.style.transition = 'transform .2s'
-    if (d.delta > 90 && !sheet.locked) { el.style.transform = 'translateY(110%)'; setTimeout(() => closeSheet(sheet.id), 180) }
-    else el.style.transform = ''
+    if (!sheet.locked && shouldDismiss({ delta: d.delta, velocity: d.vel ? d.vel.v : 0, height: el.offsetHeight })) {
+      el.style.transform = 'translateY(110%)'; setTimeout(() => closeSheet(sheet.id), 180)
+    } else el.style.transform = ''
     d.startY = null
   }
 
@@ -64,7 +74,7 @@ function Sheet({ sheet }) {
   return (
     <div>
       <div className="mback" onClick={() => { if (!sheet.locked) close() }} />
-      <div className="sheet" ref={ref} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <div className="sheet" ref={ref} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} onTouchCancel={() => { drag.current.delta = 0; onTouchEnd() }}>
         <div className="grab" />
         {sheet.render(close)}
       </div>
