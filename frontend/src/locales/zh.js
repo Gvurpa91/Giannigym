@@ -784,4 +784,12 @@ export default {
   'Home: dumbbells': '家庭：哑铃',
   'Home: body weight': '家庭：自重',
   'Home: bands': '家庭：弹力带',
+  // Exercise notes
+  'Add note': '添加备注',
+  'Save note': '保存备注',
+  'Note saved': '备注已保存',
+  'Note deleted': '备注已删除',
+  'It comes back every time you do this exercise.': '每次做这个动作时都会显示。',
+  'e.g. seat on 4, grip wide, go lighter on the left shoulder': '例如：座椅调到 4，宽握，左肩用轻一点的重量',
+  'Body part': '身体部位',
 }

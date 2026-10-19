@@ -784,4 +784,12 @@ export default {
   'Home: dumbbells': 'Дом: гантели',
   'Home: body weight': 'Дом: свой вес',
   'Home: bands': 'Дом: резинки',
+  // Exercise notes
+  'Add note': 'Добавить заметку',
+  'Save note': 'Сохранить заметку',
+  'Note saved': 'Заметка сохранена',
+  'Note deleted': 'Заметка удалена',
+  'It comes back every time you do this exercise.': 'Она будет появляться каждый раз, когда вы делаете это упражнение.',
+  'e.g. seat on 4, grip wide, go lighter on the left shoulder': 'напр. сиденье на 4, широкий хват, полегче из-за левого плеча',
+  'Body part': 'Часть тела',
 }

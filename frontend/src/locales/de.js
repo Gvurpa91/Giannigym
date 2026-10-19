@@ -802,4 +802,12 @@ export default {
   'Home: dumbbells': 'Zuhause: Kurzhanteln',
   'Home: body weight': 'Zuhause: Körpergewicht',
   'Home: bands': 'Zuhause: Bänder',
+  // Exercise notes
+  'Add note': 'Notiz hinzufügen',
+  'Save note': 'Notiz speichern',
+  'Note saved': 'Notiz gespeichert',
+  'Note deleted': 'Notiz gelöscht',
+  'It comes back every time you do this exercise.': 'Sie erscheint jedes Mal, wenn du diese Übung machst.',
+  'e.g. seat on 4, grip wide, go lighter on the left shoulder': 'z. B. Sitz auf 4, breiter Griff, links leichter wegen der Schulter',
+  'Body part': 'Körperteil',
 }

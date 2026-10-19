@@ -784,4 +784,12 @@ export default {
   'Home: dumbbells': 'Casa: halteres',
   'Home: body weight': 'Casa: peso corporal',
   'Home: bands': 'Casa: elásticos',
+  // Exercise notes
+  'Add note': 'Adicionar nota',
+  'Save note': 'Guardar nota',
+  'Note saved': 'Nota guardada',
+  'Note deleted': 'Nota eliminada',
+  'It comes back every time you do this exercise.': 'Volta a aparecer sempre que fizeres este exercício.',
+  'e.g. seat on 4, grip wide, go lighter on the left shoulder': 'ex. banco no 4, pega larga, mais leve por causa do ombro esquerdo',
+  'Body part': 'Parte do corpo',
 }

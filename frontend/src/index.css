@@ -410,6 +410,46 @@ h4.sec{
 }
 .chip:active{background:var(--surface-2)}
 .chip.on{background:var(--acc);color:var(--on-acc);font-weight:700;box-shadow:none}
+.chips.wrap{flex-wrap:wrap;overflow:visible;row-gap:8px}
+.chips.wrap .chip{padding:8px 13px}
+
+/* ---------------------------------------------------- exercise filters -- */
+.xfilters{display:flex;gap:8px;margin-top:10px}
+.fbtn-w{flex:1;min-width:0}
+.fbtn{
+  width:100%;display:flex;align-items:center;gap:8px;min-height:48px;padding:6px 10px 6px 12px;
+  border-radius:var(--r);background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);
+  color:var(--label);text-align:left;
+}
+.fbtn:active{background:var(--surface-2)}
+.fbtn-i{flex:none;color:var(--acc);font-size:17px}
+.fbtn-m{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.15}
+.fbtn-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--label-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fbtn-v{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fbtn-c{flex:none;color:var(--label-3)}
+.fbtn.on{box-shadow:inset 0 0 0 1.5px var(--acc)}
+.fbtn.on .fbtn-v{color:var(--acc);font-weight:700}
+.fbtn-x{flex:none;display:grid;place-items:center;width:30px;height:30px;margin-right:-4px;border-radius:99px;
+  background:var(--surface-2);color:var(--label-2);font-size:13px}
+
+/* the picker's search + filters stay put while the list scrolls under them */
+.pickhead{position:sticky;top:-8px;z-index:3;margin:0 -18px 10px;padding:0 18px 8px;background:var(--bg-el);
+  box-shadow:0 1px 0 var(--line)}
+:root[data-theme="light"] .pickhead{background:var(--bg)}
+.pickcount{margin-top:8px}
+
+/* ------------------------------------------------------- exercise notes -- */
+.xnote{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;margin:6px 0 4px;padding:10px 12px;
+  border-radius:var(--r);background:color-mix(in srgb, var(--acc) 12%, transparent);box-shadow:inset 3px 0 0 var(--acc);
+  font-size:14px;line-height:1.4;color:var(--label)}
+.xnote > svg{flex:none;color:var(--acc);margin-top:2px}
+.xnote-t{white-space:pre-wrap;overflow-wrap:anywhere}
+.addnote{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;margin:2px 0 6px;
+  border-radius:99px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);
+  font-size:13px;font-weight:600;color:var(--label-2)}
+.addnote:active{background:var(--surface-2)}
+.addnote svg{color:var(--acc)}
+.histnote{margin-top:4px;font-size:13px;color:var(--label-2);font-style:italic;white-space:pre-wrap;overflow-wrap:anywhere}
 
 /* =========================== CONTROLS ==================================== */
 
@@ -691,7 +731,7 @@ h4.sec{
   padding:8px 18px calc(20px + var(--sab));
   max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
   animation:sheetup .34s var(--ease);
-  overscroll-behavior:contain;touch-action:pan-y;will-change:transform;
+  overscroll-behavior:contain;touch-action:pan-x pan-y;will-change:transform;
 }
 :root[data-theme="light"] .sheet{background:var(--bg)}
 @keyframes sheetup{from{transform:translateY(100%)}to{transform:none}}

@@ -784,4 +784,12 @@ export default {
   'Home: dumbbells': 'Casa: manubri',
   'Home: body weight': 'Casa: corpo libero',
   'Home: bands': 'Casa: elastici',
+  // Exercise notes
+  'Add note': 'Aggiungi nota',
+  'Save note': 'Salva nota',
+  'Note saved': 'Nota salvata',
+  'Note deleted': 'Nota eliminata',
+  'It comes back every time you do this exercise.': 'Ricompare ogni volta che fai questo esercizio.',
+  'e.g. seat on 4, grip wide, go lighter on the left shoulder': 'es. sedile al 4, presa larga, più leggero con la spalla sinistra',
+  'Body part': 'Muscoli',
 }

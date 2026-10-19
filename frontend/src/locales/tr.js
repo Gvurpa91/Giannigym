@@ -784,4 +784,12 @@ export default {
   'Home: dumbbells': 'Ev: dambıl',
   'Home: body weight': 'Ev: vücut ağırlığı',
   'Home: bands': 'Ev: direnç bandı',
+  // Exercise notes
+  'Add note': 'Not ekle',
+  'Save note': 'Notu kaydet',
+  'Note saved': 'Not kaydedildi',
+  'Note deleted': 'Not silindi',
+  'It comes back every time you do this exercise.': 'Bu egzersizi her yaptığında yeniden görünür.',
+  'e.g. seat on 4, grip wide, go lighter on the left shoulder': 'örn. koltuk 4’te, geniş tutuş, sol omuz için daha hafif',
+  'Body part': 'Vücut bölgesi',
 }

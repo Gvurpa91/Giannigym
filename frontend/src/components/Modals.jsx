@@ -5,7 +5,7 @@ import { useUI } from '../store/useUI.js'
 function Sheet({ sheet }) {
   const { closeSheet } = useUI()
   const ref = useRef(null)
-  const drag = useRef({ startY: null, delta: 0 })
+  const drag = useRef({ startY: null, startX: 0, delta: 0, axis: null })
 
   const onTouchStart = e => {
     const el = ref.current
@@ -15,12 +15,20 @@ function Sheet({ sheet }) {
       drag.current = { startY: null, delta: 0 }
       return
     }
-    drag.current = { startY: el.scrollTop <= 0 ? e.touches[0].clientY : null, delta: 0 }
+    // The axis is decided on the first real movement: a mostly-sideways gesture (a chip row,
+    // a carousel) is left alone instead of half-dragging the sheet down while you scroll.
+    drag.current = { startY: el.scrollTop <= 0 ? e.touches[0].clientY : null, startX: e.touches[0].clientX, delta: 0, axis: null }
   }
   const onTouchMove = e => {
     const el = ref.current, d = drag.current
     if (d.startY === null) return
-    d.delta = e.touches[0].clientY - d.startY
+    const dy = e.touches[0].clientY - d.startY, dx = e.touches[0].clientX - d.startX
+    if (!d.axis) {
+      if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return
+      d.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'
+    }
+    if (d.axis === 'x') { d.startY = null; return }
+    d.delta = dy
     if (d.delta > 0 && el.scrollTop <= 0) {
       e.preventDefault()
       el.style.transition = 'none'
