@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### No grab handle on sheets that cannot be swiped away
+
+- Locked sheets — the pre-workout check-in — no longer show the grab handle and no longer
+  move under the finger. The handle promised a swipe-to-close that locked sheets never had,
+  so a swipe just bounced back. The check-in still closes through its own buttons.
+
 ### Flick a sheet away
 
 - Bottom sheets now close on a quick downward flick, not only on a drag of 90 px or more:
