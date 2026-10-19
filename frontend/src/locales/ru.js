@@ -792,4 +792,6 @@ export default {
   'It comes back every time you do this exercise.': 'Она будет появляться каждый раз, когда вы делаете это упражнение.',
   'e.g. seat on 4, grip wide, go lighter on the left shoulder': 'напр. сиденье на 4, широкий хват, полегче из-за левого плеча',
   'Body part': 'Часть тела',
+  'Type the weight': 'Ввести вес',
+  'Tap the number to type it · drag the bar to fine-tune': 'Нажмите на число, чтобы ввести его · тяните полосу для точной настройки',
 }

@@ -792,4 +792,6 @@ export default {
   'It comes back every time you do this exercise.': 'जब भी आप यह एक्सरसाइज़ करेंगे, यह फिर दिखेगा।',
   'e.g. seat on 4, grip wide, go lighter on the left shoulder': 'जैसे: सीट 4 पर, चौड़ी पकड़, बाएँ कंधे के लिए हल्का वज़न',
   'Body part': 'शरीर का हिस्सा',
+  'Type the weight': 'वज़न लिखें',
+  'Tap the number to type it · drag the bar to fine-tune': 'लिखने के लिए संख्या पर टैप करें · बारीक सेट करने के लिए बार खींचें',
 }

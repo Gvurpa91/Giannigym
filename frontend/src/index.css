@@ -795,6 +795,14 @@ h4.sec{
   font-variant-numeric:tabular-nums;line-height:1;
 }
 .bw-read .u{font-size:19px;color:var(--label-2);font-weight:400;letter-spacing:-.01em}
+button.bw-read{color:var(--label);padding:4px 6px;border-radius:var(--r);
+  text-decoration:underline dotted color-mix(in srgb, var(--acc) 70%, transparent);text-decoration-thickness:2px;text-underline-offset:8px}
+button.bw-read:active{background:var(--surface)}
+.bw-edit{display:flex;align-items:baseline;justify-content:center}
+.bw-in{width:150px;background:var(--surface);border:none;outline:none;border-radius:var(--r);
+  box-shadow:inset 0 0 0 2px var(--acc);color:var(--label);text-align:center;
+  font:inherit;font-size:52px;letter-spacing:-.04em;padding:2px 4px}
+.bw-hint{text-align:center;margin-top:8px}
 .bwin{display:flex;align-items:baseline;justify-content:center;gap:7px;margin:16px 0}
 .bwin input{
   width:150px;background:none;border:none;outline:none;text-align:right;

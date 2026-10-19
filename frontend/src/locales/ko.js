@@ -792,4 +792,6 @@ export default {
   'It comes back every time you do this exercise.': '이 운동을 할 때마다 다시 표시돼요.',
   'e.g. seat on 4, grip wide, go lighter on the left shoulder': '예: 시트 4번, 와이드 그립, 왼쪽 어깨 때문에 가볍게',
   'Body part': '신체 부위',
+  'Type the weight': '무게 입력',
+  'Tap the number to type it · drag the bar to fine-tune': '숫자를 눌러 직접 입력 · 막대를 끌어 미세 조정',
 }

@@ -23,6 +23,7 @@ import { estimate1RM, best1RM, is1RMRecord, REP_CAP } from './lib/onerm.js'
 import { nextPrescription, applyPrescription, policyFor, defaultIncrement, POLICIES_FOR, POLICY_NAME, POLICY_DESC } from './lib/progression.js'
 import { MOBILE, shareExport } from './lib/mobile.js'
 import { noteFor, setNote, NOTE_MAX } from './lib/notes.js'
+import { wHi, bwHi, parseWeight } from './lib/weight.js'
 
 const S = () => useStore.getState().S
 const update = (...a) => useStore.getState().update(...a)
@@ -64,16 +65,29 @@ export function loadStarterPlan() {
 // kg, but as pounds it cut off at 136 kg — below plenty of people's body weight, and well
 // below an everyday squat.
 const W_LO = 1
-const wHi = unit => (unit === 'lb' ? 660 : 300)
-function WeightInput({ value, setValue, unit }) {
-  const W_HI = wHi(unit)
+function WeightInput({ value, setValue, unit, max }) {
+  const W_HI = max || wHi(unit)
   const clamp = x => Math.max(W_LO, Math.min(W_HI, Math.round((x || 0) * 10) / 10))
   const sv = Math.max(W_LO, Math.min(W_HI, value))
   const onSlide = v => setValue(clamp(v))
+  // Tapping the number swaps it for a text field with the decimal keypad.
+  const [typing, setTyping] = useState(null)
+  const commit = () => {
+    const n = parseWeight(typing)
+    if (n != null) setValue(clamp(n)); else if (typing !== null && typing.trim()) toast(t('Enter a valid weight'))
+    setTyping(null)
+  }
   return <>
     <div className="bwstep">
       <button className="bw-pm" onClick={() => onSlide(value - 0.1)} aria-label="minus 0.1"><Icon name="minus" /></button>
-      <div className="bw-read">{fmtNum(value)}<span className="u"> {unit}</span></div>
+      {typing === null
+        ? <button className="bw-read" onClick={() => setTyping(String(fmtNum(value)))} aria-label={t('Type the weight')}>{fmtNum(value)}<span className="u"> {unit}</span></button>
+        : <div className="bw-read bw-edit">
+            <input autoFocus className="bw-in" inputMode="decimal" enterKeyHint="done" value={typing} aria-label={t('Type the weight')}
+              onFocus={e => e.target.select()} onChange={e => setTyping(e.target.value.replace(/[^0-9.,]/g, '').slice(0, 6))}
+              onBlur={commit} onKeyDown={e => { if (e.key === 'Enter') e.target.blur(); if (e.key === 'Escape') setTyping(null) }} />
+            <span className="u"> {unit}</span>
+          </div>}
       <button className="bw-pm" onClick={() => onSlide(value + 0.1)} aria-label="plus 0.1"><Icon name="plus" /></button>
     </div>
     <div className="chips" style={{ justifyContent: 'center', margin: '8px 0' }}>
@@ -82,7 +96,8 @@ function WeightInput({ value, setValue, unit }) {
       <button className="chip" onClick={() => onSlide(value + 0.5)}>+0.5</button>
       <button className="chip" onClick={() => onSlide(value + 1)}>+1</button>
     </div>
-    <Slider value={sv} min={W_LO} max={W_HI} step={0.5} onChange={onSlide} />
+    <Slider value={sv} min={W_LO} max={W_HI} step={0.1} relative={unit === 'lb' ? 0.1 : 0.05} onChange={onSlide} />
+    <div className="small dim bw-hint">{t('Tap the number to type it · drag the bar to fine-tune')}</div>
   </>
 }
 
@@ -109,7 +124,7 @@ function BwSheet({ required, onDone, close }) {
   return <>
     <h3>{required ? t('Quick check-in') : t('Log body weight')}</h3>
     <div className="muted small">{required ? t('Slide or tap to set your weight — tracked before every workout so your curve stays honest.') : t('Today') + ', ' + fmtDate(todayISO(), true)}</div>
-    <WeightInput value={v} setValue={setV} unit={unit} />
+    <WeightInput value={v} setValue={setV} unit={unit} max={bwHi(unit)} />
     <div style={{ height: 14 }} />
     <Button variant="primary" onClick={save}>{required ? t('Save & start workout') : t('Save')}</Button>
     {required && <>
@@ -241,7 +256,7 @@ function GoalSheet({ close }) {
   return <>
     <h3>{t('Target weight')}</h3>
     <div className="muted small">{t('Your goal is drawn as a line through the weight charts, and gains/losses are colored by whether they move toward it.')}</div>
-    <WeightInput value={v} setValue={setV} unit={st.unit} />
+    <WeightInput value={v} setValue={setV} unit={st.unit} max={bwHi(st.unit)} />
     <div style={{ height: 14 }} />
     <Button variant="primary" onClick={() => {
       const n = Math.round((v || 0) * 10) / 10
