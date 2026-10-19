@@ -12,7 +12,9 @@ function Sheet({ sheet }) {
     const el = ref.current
     // a gesture that begins on a slider (or opted-out control) belongs to that control,
     // not to the sheet's swipe-to-dismiss — so it keeps working while you drag
-    if (e.target.closest && e.target.closest('input[type=range], [data-nodrag]')) {
+    // A locked sheet (the pre-workout check-in) is closed only by its own buttons: no handle,
+    // and it does not move under the finger, so it never looks like it can be swiped away.
+    if (sheet.locked || (e.target.closest && e.target.closest('input[type=range], [data-nodrag]'))) {
       drag.current = { startY: null }
       return
     }
@@ -74,8 +76,8 @@ function Sheet({ sheet }) {
   return (
     <div>
       <div className="mback" onClick={() => { if (!sheet.locked) close() }} />
-      <div className="sheet" ref={ref} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} onTouchCancel={() => { drag.current.delta = 0; onTouchEnd() }}>
-        <div className="grab" />
+      <div className={"sheet" + (sheet.locked ? " locked" : "")} ref={ref} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} onTouchCancel={() => { drag.current.delta = 0; onTouchEnd() }}>
+        {!sheet.locked && <div className="grab" />}
         {sheet.render(close)}
       </div>
     </div>
