@@ -4,8 +4,9 @@ import { useStore } from '../store/useStore.js'
 import { EXIDX } from '../lib/exercises.js'
 import { lastBW, streakWeeks, setLabel, modeOf, effortOf } from '../lib/history.js'
 import { fmtNum, fmtDate, fmtVol, todayISO, weekKey } from '../lib/format.js'
+import { series as measureSeries, sitesWithData, change as measureChange, lengthUnit, SITE_LABEL } from '../lib/measures.js'
 import { t } from '../lib/i18n.js'
-import { bwSheet, goalSheet, calendarSheet, workoutDetailSheet, WorkoutRow, bwDeltaColor } from '../sheets.jsx'
+import { bwSheet, goalSheet, calendarSheet, workoutDetailSheet, WorkoutRow, bwDeltaColor, measureSheet } from '../sheets.jsx'
 import LineChart from '../components/LineChart.jsx'
 import Heatmap from '../components/Heatmap.jsx'
 import Icon from '../components/Icon.jsx'
@@ -130,6 +131,31 @@ function EffortCard({ S }) {
 }
 
 // Stats = the analytics hub: all charts, progress and history live here.
+// Waist and other measurements (lib/measures.js): for fat loss with muscle gain, the line that
+// moves when the scale does not.
+function MeasuresCard({ S }) {
+  const sites = sitesWithData(S)
+  const [site, setSite] = useState('waist')
+  const cur = sites.includes(site) ? site : sites[0]
+  const unit = lengthUnit(S.unit)
+  const pts = cur ? measureSeries(S, cur, S.unit) : []
+  const d30 = cur ? measureChange(S, cur, 30, S.unit) : null
+  return <div className="card">
+    <div className="row between" style={{ marginBottom: 8 }}>
+      <h2 style={{ margin: 0 }}>{t('Measurements')}</h2>
+      <Button size="sm" icon="plus" onClick={measureSheet}>{t('Log')}</Button>
+    </div>
+    {!sites.length ? <div className="muted small">{t('Measure your waist every week or two: it is the most direct sign of belly fat going, even when the scale stands still.')}</div> : <>
+      {sites.length > 1 && <Segmented className="seg-range" value={cur} onChange={setSite} options={sites.map(k => ({ value: k, label: t(SITE_LABEL[k]) }))} />}
+      <div className="chart"><LineChart points={pts} h={150} unit={unit} color="var(--teal)" /></div>
+      <div className="small dim" style={{ marginTop: 6 }}>
+        {t(SITE_LABEL[cur])}: <b style={{ color: 'var(--label)' }}>{fmtNum(pts[pts.length - 1].y)} {unit}</b>
+        {d30 != null && <> · {t('30 days')}: <b style={{ color: d30 < 0 ? 'var(--green)' : d30 > 0 ? 'var(--orange)' : 'var(--label)' }}>{(d30 > 0 ? '+' : '') + fmtNum(d30)} {unit}</b></>}
+      </div>
+    </>}
+  </div>
+}
+
 export default function Stats() {
   const nav = useNavigate()
   const S = useStore(s => s.S)
@@ -226,6 +252,8 @@ export default function Stats() {
           options={[{ value: 30, label: '1M' }, { value: 90, label: '3M' }, { value: 365, label: '1Y' }, { value: 0, label: t('All') }]} />
         <div className="chart"><LineChart points={bwPts} h={160} unit={S.unit} goal={S.targetW} /></div>
       </div>
+
+      <MeasuresCard S={S} />
 
       <div className="card">
         <h2>{t('Exercise progress')}</h2>

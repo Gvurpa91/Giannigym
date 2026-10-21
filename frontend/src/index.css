@@ -804,6 +804,16 @@ button.bw-read:active{background:var(--surface)}
   box-shadow:inset 0 0 0 2px var(--acc);color:var(--label);text-align:center;
   font:inherit;font-size:52px;letter-spacing:-.04em;padding:2px 4px}
 .bw-hint{text-align:center;margin-top:8px}
+.waistline{display:flex;align-items:center;gap:8px;width:100%;margin-top:10px;padding:10px 12px;border-radius:var(--r);
+  background:var(--surface-2);font-size:14px;color:var(--label-2);text-align:left}
+.waistline:active{background:var(--surface-3)}
+.waistline > svg:first-child{color:var(--teal);font-size:18px;flex:none}
+.waistline span{flex:1;min-width:0}
+.waistline b{color:var(--label)}
+.meas-in{display:flex;align-items:center;gap:6px;flex:none}
+.meas-in .num{width:84px;text-align:right;background:var(--surface-2);border:none;outline:none;border-radius:8px;
+  padding:9px 10px;font-size:17px;color:var(--label)}
+.meas-in .num:focus{box-shadow:inset 0 0 0 2px var(--acc)}
 .bwin{display:flex;align-items:baseline;justify-content:center;gap:7px;margin:16px 0}
 .bwin input{
   width:150px;background:none;border:none;outline:none;text-align:right;
