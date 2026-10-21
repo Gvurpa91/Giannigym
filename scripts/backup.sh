@@ -10,7 +10,7 @@
 #   scp -i <key> opc@<server>:/opt/giannigym/backups/latest.tgz ~/Desktop/
 set -eu
 
-ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+ROOT=$(CDPATH='' cd -- "$(dirname -- "$(readlink -f "$0")")/.." && pwd)
 DATA=${DATA_DIR:-$ROOT/data}
 DEST=${BACKUP_DIR:-$ROOT/backups}
 KEEP=${KEEP:-14}
@@ -31,6 +31,7 @@ chmod 600 "$OUT"
 ln -sf "$(basename "$OUT")" "$DEST/latest.tgz"
 
 # Rotation: newest first, drop everything after the first KEEP.
+# shellcheck disable=SC2012  # names are ours: giannigym-YYYY-MM-DD_HHMM.tgz
 ls -1t "$DEST"/giannigym-*.tgz 2>/dev/null | tail -n +"$((KEEP + 1))" | while read -r old; do rm -f "$old"; done
 
 echo "backup ok: $OUT ($(du -h "$OUT" | cut -f1)), keeping $KEEP"

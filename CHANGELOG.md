@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### One-command updates
+
+- `sudo giannigym-update` backs up `data/`, pulls the code as the checkout's owner (git
+  refuses repos owned by someone else), rebuilds with or without the Caddy proxy depending
+  on `DOMAIN`, waits for `/api/health`, and prunes old images. Exits early when nothing
+  changed; `--force` rebuilds anyway; `DRY_RUN=1` prints the steps.
+- `scripts/server-setup.sh` (run once, idempotent) installs `giannigym-update` and
+  `giannigym-backup`, schedules the nightly backup with a systemd timer, and turns on
+  automatic security updates (`dnf-automatic` or `unattended-upgrades`).
+
 ### Body measurements
 
 - Waist, hips, chest, arm and thigh, logged from Stats or from a new waist line under the
