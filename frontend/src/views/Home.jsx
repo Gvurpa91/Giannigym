@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
+import { useUI } from '../store/useUI.js'
 import { effectiveRoutine, effectiveRoutineId, streakWeeks, lastBW, setsDoneActive } from '../lib/history.js'
 import { fmtNum, fmtDate, todayISO, isoOf, weekKey, DAYS } from '../lib/format.js'
 import { t, dateLocale } from '../lib/i18n.js'
@@ -14,6 +15,7 @@ import { coachAvailable, hasConsent } from '../lib/coach.js'
 import { useCoachStatus } from '../lib/coach-api.js'
 import { DEMO } from '../lib/demo.js'
 import { MOBILE } from '../lib/mobile.js'
+import { backupDue, exportBackup, SNOOZE_DAYS } from '../lib/backup.js'
 
 // A job in flight or a proposal waiting is the only reason the Coach interrupts Home. When it
 // has nothing to say it renders nothing at all — and it only polls while Home is on screen.
@@ -41,6 +43,33 @@ function CoachCard({ nav }) {
 }
 
 // Home = what to do now + a quick glance. Deep charts & history live in Stats.
+// Monthly nudge to keep a copy of your data off the server (see lib/backup.js).
+function BackupCard({ S }) {
+  const update = useStore(s => s.update)
+  const toast = useUI(s => s.toast)
+  const since = S.lastBackup
+  const go = async () => {
+    if (await exportBackup(S)) { update(s => { s.lastBackup = todayISO(); s.backupSnooze = null }); toast(t('Backup exported')) }
+  }
+  const later = () => {
+    const d = new Date(); d.setDate(d.getDate() + SNOOZE_DAYS)
+    update(s => { s.backupSnooze = isoOf(d) })
+  }
+  return <div className="card backup-card">
+    <div className="row" style={{ gap: 10, marginBottom: 6, alignItems: 'flex-start' }}>
+      <span className="lrow-i" style={{ background: 'var(--blue)' }}><Icon name="download" /></span>
+      <div style={{ minWidth: 0 }}>
+        <div className="ttl" style={{ fontWeight: 700 }}>{t('Time for a backup')}</div>
+        <div className="muted small">{since ? t('Last backup: {0}. Save a copy in Files or iCloud, so a server problem can never cost you your history.', fmtDate(since, true)) : t('Save a copy in Files or iCloud, so a server problem can never cost you your history.')}</div>
+      </div>
+    </div>
+    <div className="row" style={{ gap: 8, marginTop: 8 }}>
+      <Button size="sm" variant="primary" icon="download" onClick={go}>{t('Export now')}</Button>
+      <Button size="sm" onClick={later}>{t('Later')}</Button>
+    </div>
+  </div>
+}
+
 export default function Home() {
   const nav = useNavigate()
   const S = useStore(s => s.S)
@@ -107,6 +136,7 @@ export default function Home() {
     </div>
 
     {coachOn && <CoachCard nav={nav} />}
+    {!DEMO && backupDue(S) && <BackupCard S={S} />}
 
     {!S.routines.length && !S.active && (
       <div className="card">

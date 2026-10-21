@@ -164,15 +164,34 @@ per far entrare chi vuoi tu. I profili già creati continuano a funzionare.
 ## 7. Backup
 
 Tutto sta nella cartella `/opt/giannigym/data`: profili, chiavi pubbliche delle passkey,
-allenamenti di ciascun utente, chiave di sessione. Copiarla equivale a fare il backup
-completo. Un cron giornaliero verso il tuo computer o un bucket:
+allenamenti di ciascun utente, chiave di sessione. Ci sono tre livelli di protezione.
 
+1. **Copia notturna sul server.** `scripts/backup.sh` crea un archivio compresso di `data`,
+   ne verifica la leggibilità e tiene gli ultimi 14 in `/opt/giannigym/backups`, con un link
+   `latest.tgz` al più recente. Lo pianifica ogni notte `scripts/server-setup.sh` (sezione 8);
+   a mano:
+   ```bash
+   sudo /opt/giannigym/scripts/backup.sh
+   ```
+   Protegge da un aggiornamento andato male o da un file rovinato, **non** dalla perdita
+   dell'intero server.
+2. **Copia fuori dal server**, ogni tanto, dal tuo computer:
+   ```bash
+   scp -i <chiave> opc@<IP>:/opt/giannigym/backups/latest.tgz ~/Desktop/
+   ```
+   (Il file è leggibile solo da root: se `scp` risponde "Permission denied", sul server esegui
+   prima `sudo cp /opt/giannigym/backups/latest.tgz /home/opc/ && sudo chown opc /home/opc/latest.tgz`
+   e copia `/home/opc/latest.tgz`, poi cancellalo.)
+3. **Backup dall'app.** Ogni utente può esportare i propri dati da Impostazioni → Esporta backup.
+   Su iPhone si apre il foglio di condivisione: scegli "Salva in File" o iCloud. Se non esporti
+   da 30 giorni, la Home lo ricorda con una scheda.
+
+Per ripristinare un archivio: ferma l'app, sostituisci `data`, riavvia.
 ```bash
-# sul VPS, archivio compresso con la data nel nome
-tar czf /root/giannigym-$(date +%F).tgz -C /opt/giannigym data
+cd /opt/giannigym && sudo docker compose -f docker-compose.yml -f docker-compose.caddy.yml down
+sudo mv data data.old && sudo tar -xzf backups/latest.tgz
+sudo docker compose -f docker-compose.yml -f docker-compose.caddy.yml up -d
 ```
-
-Oltre a questo, ogni utente può esportare i propri dati in JSON dalle Impostazioni dell'app.
 
 ## 8. Aggiornare
 

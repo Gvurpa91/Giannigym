@@ -794,4 +794,11 @@ export default {
   'Body part': 'शरीर का हिस्सा',
   'Type the weight': 'वज़न लिखें',
   'Tap the number to type it · drag the bar to fine-tune': 'लिखने के लिए संख्या पर टैप करें · बारीक सेट करने के लिए बार खींचें',
+  'Last backup: {0}': 'पिछला बैकअप: {0}',
+  'No backup yet': 'अभी तक कोई बैकअप नहीं',
+  'Time for a backup': 'बैकअप का समय',
+  'Last backup: {0}. Save a copy in Files or iCloud, so a server problem can never cost you your history.': 'पिछला बैकअप: {0}। Files या iCloud में एक कॉपी सहेजें, ताकि सर्वर की समस्या से आपका इतिहास कभी न खोए।',
+  'Save a copy in Files or iCloud, so a server problem can never cost you your history.': 'Files या iCloud में एक कॉपी सहेजें, ताकि सर्वर की समस्या से आपका इतिहास कभी न खोए।',
+  'Export now': 'अभी एक्सपोर्ट करें',
+  'Later': 'बाद में',
 }

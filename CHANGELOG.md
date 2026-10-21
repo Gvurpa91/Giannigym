@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### Backups you can count on
+
+- **Monthly reminder.** Home asks for a backup 30 days after the last export (or after the
+  first workout, if there never was one), with "Export now" and "Later" (7 days). The last
+  export date is synced, so exporting on any device counts, and Settings shows it.
+- **Export through the share sheet** where the browser can share files — on an iPhone
+  home-screen app that means "Save to Files" or iCloud instead of a download viewer you
+  cannot leave.
+- **Nightly server archives.** `scripts/backup.sh` compresses `data/`, checks the archive
+  reads back, keeps the last 14 and links `latest.tgz`; the Codex sign-in cache stays out.
+  Restore steps are in `docs/DEPLOY_VPS.md`.
+
 ### Tab bar stays at the bottom on iPhone
 
 - iOS could leave the fixed tab bar floating halfway up the screen — after the on-screen
