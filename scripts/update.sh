@@ -1,5 +1,6 @@
 #!/bin/sh
-# Update GianniGym in one command:  sudo giannigym-update
+# Update GianniGym in one command:  giannigym-update   (no sudo needed: it elevates itself;
+# `sudo giannigym-update` fails on Oracle Linux, whose sudo ignores /usr/local/bin)
 #
 # 1. backs up data/ (scripts/backup.sh), 2. pulls the latest code as the repo's owner,
 # 3. rebuilds and restarts the containers (with the Caddy HTTPS proxy when DOMAIN is set),
@@ -14,7 +15,7 @@ ROOT=$(CDPATH='' cd -- "$(dirname -- "$(readlink -f "$0")")/.." && pwd)
 FORCE=0; [ "${1:-}" = "--force" ] && FORCE=1
 run() { if [ "${DRY_RUN:-0}" = 1 ]; then echo "+ $*"; else "$@"; fi; }
 
-if [ "$(id -u)" != 0 ] && [ "${DRY_RUN:-0}" != 1 ]; then exec sudo "$0" "$@"; fi
+if [ "$(id -u)" != 0 ] && [ "${DRY_RUN:-0}" != 1 ]; then exec sudo "$(readlink -f "$0")" "$@"; fi
 cd "$ROOT"
 
 # git refuses to work in a repo owned by someone else ("dubious ownership"), so it runs as

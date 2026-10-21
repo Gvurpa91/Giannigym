@@ -14,7 +14,7 @@ echo "== commands"
 chmod +x "$ROOT/scripts/update.sh" "$ROOT/scripts/backup.sh"
 ln -sf "$ROOT/scripts/update.sh" /usr/local/bin/giannigym-update
 ln -sf "$ROOT/scripts/backup.sh" /usr/local/bin/giannigym-backup
-echo "giannigym-update and giannigym-backup installed in /usr/local/bin"
+echo "installed: run  giannigym-update  and  giannigym-backup  (without sudo — they ask for it themselves)"
 
 echo "== nightly backup"
 cat > /etc/systemd/system/giannigym-backup.service <<UNIT

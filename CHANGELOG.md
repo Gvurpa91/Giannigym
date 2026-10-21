@@ -15,7 +15,7 @@
 
 ### One-command updates
 
-- `sudo giannigym-update` backs up `data/`, pulls the code as the checkout's owner (git
+- `giannigym-update` (no sudo: it elevates itself) backs up `data/`, pulls the code as the checkout's owner (git
   refuses repos owned by someone else), rebuilds with or without the Caddy proxy depending
   on `DOMAIN`, waits for `/api/health`, and prunes old images. Exits early when nothing
   changed; `--force` rebuilds anyway; `DRY_RUN=1` prints the steps.

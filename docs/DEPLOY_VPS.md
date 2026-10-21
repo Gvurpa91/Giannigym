@@ -171,7 +171,7 @@ allenamenti di ciascun utente, chiave di sessione. Ci sono tre livelli di protez
    `latest.tgz` al più recente. Lo pianifica ogni notte `scripts/server-setup.sh` (sezione 8);
    a mano:
    ```bash
-   sudo /opt/giannigym/scripts/backup.sh
+   giannigym-backup
    ```
    Protegge da un aggiornamento andato male o da un file rovinato, **non** dalla perdita
    dell'intero server.
@@ -210,8 +210,11 @@ senza problemi.
 **Da quel momento**, per aggiornare GianniGym basta:
 
 ```bash
-sudo giannigym-update
+giannigym-update
 ```
+
+Senza `sudo` davanti: il comando chiede da solo i permessi. Su Oracle Linux `sudo giannigym-update`
+risponde "command not found", perché lì `sudo` non cerca nella cartella `/usr/local/bin`.
 
 Il comando fa nell'ordine:
 1. un backup di `data/`;
@@ -220,8 +223,8 @@ Il comando fa nell'ordine:
 4. aspetta che l'API risponda;
 5. cancella le immagini Docker vecchie per non riempire il disco.
 
-Se non c'è niente di nuovo si ferma subito. `sudo giannigym-update --force` ricostruisce comunque.
-`sudo giannigym-backup` fa solo il backup.
+Se non c'è niente di nuovo si ferma subito. `giannigym-update --force` ricostruisce comunque.
+`giannigym-backup` fa solo il backup.
 
 Gli aggiornamenti del kernel diventano attivi solo al riavvio: ogni tanto esegui `sudo reboot`.
 L'app ripartirà da sola.
