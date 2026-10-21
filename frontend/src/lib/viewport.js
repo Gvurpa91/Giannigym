@@ -16,6 +16,13 @@ export function realignFixed() {
   })
 }
 
+// The keyboard takes ~300 ms to slide away; realigning only at the start can be too early.
+export function realignSoon() {
+  realignFixed()
+  setTimeout(realignFixed, 420)
+  setTimeout(realignFixed, 900)
+}
+
 export function installViewportFix() {
   if (installed || typeof window === 'undefined') return
   installed = true
@@ -23,14 +30,14 @@ export function installViewportFix() {
   // Keyboard closing: focus leaves a text field and does not land on another one.
   document.addEventListener('focusout', e => {
     if (!isField(e.target)) return
-    setTimeout(() => { if (!isField(document.activeElement)) realignFixed() }, 120)
+    setTimeout(() => { if (!isField(document.activeElement)) realignSoon() }, 120)
   })
   // The visual viewport grows back to full height when the keyboard is dismissed by swipe.
   const vv = window.visualViewport
   if (vv) {
     let last = vv.height
     vv.addEventListener('resize', () => {
-      if (vv.height > last + 80) setTimeout(realignFixed, 60)
+      if (vv.height > last + 80) setTimeout(realignSoon, 60)
       last = vv.height
     })
   }

@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { useUI } from '../store/useUI.js'
 import { shouldDismiss, trackVelocity } from '../lib/gesture.js'
-import { realignFixed } from '../lib/viewport.js'
+import { realignSoon } from '../lib/viewport.js'
 
 // One bottom sheet (or centered dialog) with swipe-to-dismiss.
 function Sheet({ sheet }) {
@@ -57,6 +57,15 @@ function Sheet({ sheet }) {
     d.startY = null
   }
 
+  // A sheet that closes with its text field still focused (Save note) takes the field out of
+  // the page without a blur, and iOS then never hears that the keyboard went away. Blurring
+  // first lets the keyboard close the normal way, before the node disappears.
+  useLayoutEffect(() => () => {
+    const a = document.activeElement
+    const host = ref.current || document.getElementById('modal-root')
+    if (a && host && host.contains(a) && typeof a.blur === 'function') a.blur()
+  }, [])
+
   // non-passive touchmove so preventDefault works (bottom sheets only; centered dialogs have no ref)
   useEffect(() => {
     const el = ref.current
@@ -98,7 +107,7 @@ export default function Modals() {
     return () => {
       b.position = b.top = b.left = b.right = b.width = ''
       window.scrollTo(0, y)
-      realignFixed()
+      realignSoon()
     }
   }, [sheets.length > 0])
 
