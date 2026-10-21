@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Body measurements
+
+- Waist, hips, chest, arm and thigh, logged from Stats or from a new waist line under the
+  body-weight card on Home. One entry per day, stored in centimetres (inches for pound
+  profiles), with typos outside 10–300 cm ignored. Stats draws a chart per measurement and
+  the 30-day change; Home shows the latest waist and its 30-day change. Measurements are
+  synced and backed up, and are not sent to the AI Coach. Logic in `lib/measures.js`, tested.
+
 ### Backups you can count on
 
 - **Monthly reminder.** Home asks for a backup 30 days after the last export (or after the

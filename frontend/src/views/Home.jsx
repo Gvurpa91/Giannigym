@@ -6,7 +6,7 @@ import { effectiveRoutine, effectiveRoutineId, streakWeeks, lastBW, setsDoneActi
 import { fmtNum, fmtDate, todayISO, isoOf, weekKey, DAYS } from '../lib/format.js'
 import { t, dateLocale } from '../lib/i18n.js'
 import { APP_NAME } from '../lib/brand.js'
-import { bwSheet, goalSheet, dayOverrideSheet, calendarSheet, startFlow, loadStarterPlan, bwDeltaColor } from '../sheets.jsx'
+import { measureSheet, bwSheet, goalSheet, dayOverrideSheet, calendarSheet, startFlow, loadStarterPlan, bwDeltaColor } from '../sheets.jsx'
 import LineChart from '../components/LineChart.jsx'
 import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
@@ -16,6 +16,7 @@ import { useCoachStatus } from '../lib/coach-api.js'
 import { DEMO } from '../lib/demo.js'
 import { MOBILE } from '../lib/mobile.js'
 import { backupDue, exportBackup, SNOOZE_DAYS } from '../lib/backup.js'
+import { series as measureSeries, change as measureChange, lengthUnit } from '../lib/measures.js'
 
 // A job in flight or a proposal waiting is the only reason the Coach interrupts Home. When it
 // has nothing to say it renders nothing at all — and it only polls while Home is on screen.
@@ -43,6 +44,21 @@ function CoachCard({ nav }) {
 }
 
 // Home = what to do now + a quick glance. Deep charts & history live in Stats.
+// The waist under the weight: for fat loss with muscle gain it is the number that moves.
+function WaistLine({ S }) {
+  const pts = measureSeries(S, 'waist', S.unit)
+  const unit = lengthUnit(S.unit)
+  const last = pts[pts.length - 1]
+  const d30 = measureChange(S, 'waist', 30, S.unit)
+  return <button className="waistline" onClick={measureSheet}>
+    <Icon name="ruler" />
+    {last
+      ? <span>{t('Waist')} <b>{fmtNum(last.y)} {unit}</b>{d30 != null && <> · <b style={{ color: d30 < 0 ? 'var(--green)' : d30 > 0 ? 'var(--orange)' : 'inherit' }}>{(d30 > 0 ? '+' : '') + fmtNum(d30)} {unit}</b> {t('in 30 days')}</>}</span>
+      : <span>{t('Add your waist measurement')}</span>}
+    <Icon name="chevronRight" className="chev" />
+  </button>
+}
+
 // Monthly nudge to keep a copy of your data off the server (see lib/backup.js).
 function BackupCard({ S }) {
   const update = useStore(s => s.update)
@@ -184,6 +200,7 @@ export default function Home() {
         )}
         <div className="chart" style={{ marginTop: 8 }}><LineChart points={bwPoints} h={130} unit={S.unit} goal={S.targetW} /></div>
       </> : <div className="muted small">{t("No entries yet — log your weight to start the curve. It's also asked before every workout.")}</div>}
+      <WaistLine S={S} />
     </div>
 
     <div className="card tappable" style={{ cursor: 'pointer' }} onClick={() => calendarSheet()}>

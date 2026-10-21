@@ -12,7 +12,7 @@ import { starterRoutines } from './lib/starter.js'
 import Media, { Thumb } from './components/Media.jsx'
 import Stepper from './components/Stepper.jsx'
 import Icon from './components/Icon.jsx'
-import { Button, Slider, Switch, Segmented, SelectRow, TextArea } from './components/ui.jsx'
+import { Button, Slider, Switch, Segmented, SelectRow, TextArea, NumberField } from './components/ui.jsx'
 import { glyphOf, GLYPH_GROUPS, DEFAULT_GLYPH } from './lib/glyphs.js'
 import BodyMap from './components/BodyMap.jsx'
 import ExerciseFilters from './components/ExerciseFilters.jsx'
@@ -24,6 +24,7 @@ import { nextPrescription, applyPrescription, policyFor, defaultIncrement, POLIC
 import { MOBILE, shareExport } from './lib/mobile.js'
 import { noteFor, setNote, NOTE_MAX } from './lib/notes.js'
 import { wHi, bwHi, parseWeight } from './lib/weight.js'
+import { SITES, SITE_LABEL, setMeasures, deleteMeasures, latest as latestMeasures, lengthUnit, toDisplay } from './lib/measures.js'
 
 const S = () => useStore.getState().S
 const update = (...a) => useStore.getState().update(...a)
@@ -147,6 +148,48 @@ export function bwSheet(opts = {}) {
   const h = ui().openSheet(close => <BwSheet {...opts} close={close} />, { locked: !!opts.required })
   return h
 }
+
+/* ============================ body measurements ============================ */
+// Waist first: for fat loss with muscle gain it moves when the scale does not (lib/measures.js).
+function MeasureSheet({ close }) {
+  const st = useStore(s => s.S)
+  const unit = lengthUnit(st.unit)
+  const today = todayISO()
+  const todayRow = (st.measures || []).find(m => m.d === today) || {}
+  const prev = latestMeasures(st, st.unit)
+  const [v, setV] = useState(() => Object.fromEntries(SITES.map(k => [k, toDisplay(todayRow[k], st.unit)])))
+  const save = () => {
+    const filled = SITES.filter(k => v[k] != null && v[k] > 0)
+    if (!filled.length && !Object.keys(todayRow).some(k => k !== 'd')) { toast(t('Enter at least one measurement')); return }
+    update(s => { setMeasures(s, v, s.unit, today) })
+    close(); toast(t('Measurements saved'))
+  }
+  const recent = [...(st.measures || [])].reverse().slice(0, 4)
+  return <>
+    <h3>{t('Body measurements')}</h3>
+    <div className="muted small" style={{ marginBottom: 12 }}>{t('Same spot, same time of day, tape snug but not tight, after breathing out. Waist: at the navel.')}</div>
+    <div className="sect-b">
+      {SITES.map(k => <div key={k} className="lrow">
+        <span className="lrow-m"><span className="lrow-t">{t(SITE_LABEL[k])}</span>
+          {prev[k] != null && <span className="lrow-s">{t('Last: {0}', fmtNum(prev[k]) + ' ' + unit)}</span>}</span>
+        <span className="meas-in"><NumberField nullable value={v[k]} onChange={n => setV(o => ({ ...o, [k]: n }))} placeholder={prev[k] != null ? String(fmtNum(prev[k])) : '—'} aria-label={t(SITE_LABEL[k])} /><span className="dim small">{unit}</span></span>
+      </div>)}
+    </div>
+    <div style={{ height: 14 }} />
+    <Button variant="primary" onClick={save}>{t('Save')}</Button>
+    {recent.length > 0 && <>
+      <h4 className="sec">{t('Recent measurements')}</h4>
+      <div className="list" style={{ gap: 0 }}>
+        {recent.map(m => <div key={m.d} className="row between" style={{ padding: '9px 2px', borderBottom: '1px solid var(--sep)', gap: 10 }}>
+          <span className="small muted" style={{ flex: 'none' }}>{fmtDate(m.d, true)}</span>
+          <span className="small" style={{ flex: 1, textAlign: 'right' }}>{SITES.filter(k => m[k] != null).map(k => t(SITE_LABEL[k]) + ' ' + fmtNum(toDisplay(m[k], st.unit))).join(' · ')}</span>
+          <button className="iconbtn" style={{ width: 32, height: 30, borderRadius: 8, fontSize: 15, color: 'var(--red)', flex: 'none' }} onClick={() => update(s => { deleteMeasures(s, m.d) })} aria-label={t('Delete')}><Icon name="trash" /></button>
+        </div>)}
+      </div>
+    </>}
+  </>
+}
+export const measureSheet = () => ui().openSheet(close => <MeasureSheet close={close} />)
 
 /* ============================ import from another app ============================ */
 // Shows what a parsed export would actually do before anything is written. An import is
