@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Tab bar stays at the bottom on iPhone
+
+- iOS could leave the fixed tab bar floating halfway up the screen — after the on-screen
+  keyboard closed, after a sheet unpinned the page, or on returning to the app. The app now
+  nudges WebKit into laying fixed elements out again at each of those moments
+  (`lib/viewport.js`).
+
 ### A calmer weight picker
 
 - **Type it.** Tapping the big number turns it into a field with the decimal keypad;
