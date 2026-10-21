@@ -816,4 +816,7 @@ export default {
   'Thigh': '허벅지',
   'in 30 days': '30일간',
   'Add your waist measurement': '허리둘레 추가',
+  'Sync failed: your data is larger than the server accepts. Export a backup from Settings.': '동기화 실패: 데이터가 서버 한도를 넘었어요. 설정에서 백업을 내보내세요.',
+  'This device is out of storage space. Your data is still saved on the server.': '기기 저장 공간이 부족해요. 데이터는 서버에 계속 저장돼요.',
+  'This device is out of storage space. Export a backup from Settings now.': '기기 저장 공간이 부족해요. 지금 설정에서 백업을 내보내세요.',
 }

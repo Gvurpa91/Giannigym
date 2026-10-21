@@ -816,4 +816,7 @@ export default {
   'Thigh': 'जाँघ',
   'in 30 days': '30 दिनों में',
   'Add your waist measurement': 'कमर का माप जोड़ें',
+  'Sync failed: your data is larger than the server accepts. Export a backup from Settings.': 'सिंक विफल: आपका डेटा सर्वर की सीमा से बड़ा है। सेटिंग्स से बैकअप एक्सपोर्ट करें।',
+  'This device is out of storage space. Your data is still saved on the server.': 'इस डिवाइस में जगह खत्म हो गई है। आपका डेटा सर्वर पर सुरक्षित है।',
+  'This device is out of storage space. Export a backup from Settings now.': 'इस डिवाइस में जगह खत्म हो गई है। अभी सेटिंग्स से बैकअप एक्सपोर्ट करें।',
 }

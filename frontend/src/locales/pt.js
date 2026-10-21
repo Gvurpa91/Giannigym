@@ -816,4 +816,7 @@ export default {
   'Thigh': 'Coxa',
   'in 30 days': 'em 30 dias',
   'Add your waist measurement': 'Adiciona a medida da cintura',
+  'Sync failed: your data is larger than the server accepts. Export a backup from Settings.': 'Falha na sincronização: os teus dados excedem o limite do servidor. Exporta uma cópia nas Definições.',
+  'This device is out of storage space. Your data is still saved on the server.': 'Este dispositivo está sem espaço. Os teus dados continuam guardados no servidor.',
+  'This device is out of storage space. Export a backup from Settings now.': 'Este dispositivo está sem espaço. Exporta já uma cópia nas Definições.',
 }

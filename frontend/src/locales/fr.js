@@ -816,4 +816,7 @@ export default {
   'Thigh': 'Cuisse',
   'in 30 days': 'en 30 jours',
   'Add your waist measurement': 'Ajoutez votre tour de taille',
+  'Sync failed: your data is larger than the server accepts. Export a backup from Settings.': 'Échec de la synchronisation : vos données dépassent la limite du serveur. Exportez une sauvegarde depuis les Réglages.',
+  'This device is out of storage space. Your data is still saved on the server.': 'Cet appareil n’a plus d’espace. Vos données restent enregistrées sur le serveur.',
+  'This device is out of storage space. Export a backup from Settings now.': 'Cet appareil n’a plus d’espace. Exportez tout de suite une sauvegarde depuis les Réglages.',
 }

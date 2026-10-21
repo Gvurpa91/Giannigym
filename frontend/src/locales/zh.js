@@ -816,4 +816,7 @@ export default {
   'Thigh': '大腿围',
   'in 30 days': '30 天内',
   'Add your waist measurement': '添加腰围',
+  'Sync failed: your data is larger than the server accepts. Export a backup from Settings.': '同步失败：数据超出服务器上限。请在设置中导出备份。',
+  'This device is out of storage space. Your data is still saved on the server.': '此设备存储空间已满。你的数据仍保存在服务器上。',
+  'This device is out of storage space. Export a backup from Settings now.': '此设备存储空间已满。请立即在设置中导出备份。',
 }

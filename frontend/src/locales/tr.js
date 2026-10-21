@@ -816,4 +816,7 @@ export default {
   'Thigh': 'Uyluk',
   'in 30 days': '30 günde',
   'Add your waist measurement': 'Bel ölçünü ekle',
+  'Sync failed: your data is larger than the server accepts. Export a backup from Settings.': 'Eşitleme başarısız: verilerin sunucunun kabul ettiğinden büyük. Ayarlar’dan yedek dışa aktar.',
+  'This device is out of storage space. Your data is still saved on the server.': 'Bu cihazda yer kalmadı. Verilerin sunucuda kayıtlı kalmaya devam ediyor.',
+  'This device is out of storage space. Export a backup from Settings now.': 'Bu cihazda yer kalmadı. Hemen Ayarlar’dan yedek dışa aktar.',
 }

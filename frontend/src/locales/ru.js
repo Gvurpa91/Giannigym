@@ -816,4 +816,7 @@ export default {
   'Thigh': 'Бедро',
   'in 30 days': 'за 30 дней',
   'Add your waist measurement': 'Добавьте обхват талии',
+  'Sync failed: your data is larger than the server accepts. Export a backup from Settings.': 'Синхронизация не удалась: данные превышают лимит сервера. Экспортируйте копию в настройках.',
+  'This device is out of storage space. Your data is still saved on the server.': 'На устройстве закончилось место. Данные по-прежнему сохранены на сервере.',
+  'This device is out of storage space. Export a backup from Settings now.': 'На устройстве закончилось место. Сразу экспортируйте копию в настройках.',
 }

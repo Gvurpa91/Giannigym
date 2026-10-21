@@ -816,4 +816,7 @@ export default {
   'Thigh': 'Udo',
   'in 30 days': 'w 30 dni',
   'Add your waist measurement': 'Dodaj obwód talii',
+  'Sync failed: your data is larger than the server accepts. Export a backup from Settings.': 'Synchronizacja nieudana: dane przekraczają limit serwera. Wyeksportuj kopię w Ustawieniach.',
+  'This device is out of storage space. Your data is still saved on the server.': 'Na tym urządzeniu brakuje miejsca. Twoje dane są nadal zapisane na serwerze.',
+  'This device is out of storage space. Export a backup from Settings now.': 'Na tym urządzeniu brakuje miejsca. Wyeksportuj teraz kopię w Ustawieniach.',
 }
