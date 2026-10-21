@@ -195,11 +195,36 @@ sudo docker compose -f docker-compose.yml -f docker-compose.caddy.yml up -d
 
 ## 8. Aggiornare
 
+**Una volta sola**, dopo aver scaricato una versione che contiene `scripts/server-setup.sh`:
+
 ```bash
-cd /opt/giannigym
-git pull
-docker compose -f docker-compose.yml -f docker-compose.caddy.yml up -d --build
+cd /opt/giannigym && git pull
+sudo sh scripts/server-setup.sh
 ```
+
+Lo script installa due comandi, pianifica il backup notturno alle 03:17 (recuperato al riavvio
+se il server era spento) e attiva gli aggiornamenti di sicurezza automatici del sistema
+operativo: `dnf-automatic` su Oracle Linux, `unattended-upgrades` su Ubuntu. Si può rilanciare
+senza problemi.
+
+**Da quel momento**, per aggiornare GianniGym basta:
+
+```bash
+sudo giannigym-update
+```
+
+Il comando fa nell'ordine:
+1. un backup di `data/`;
+2. scarica il codice nuovo;
+3. ricostruisce e riavvia l'app, con Caddy se nel `.env` c'è `DOMAIN`;
+4. aspetta che l'API risponda;
+5. cancella le immagini Docker vecchie per non riempire il disco.
+
+Se non c'è niente di nuovo si ferma subito. `sudo giannigym-update --force` ricostruisce comunque.
+`sudo giannigym-backup` fa solo il backup.
+
+Gli aggiornamenti del kernel diventano attivi solo al riavvio: ogni tanto esegui `sudo reboot`.
+L'app ripartirà da sola.
 
 I dati in `data/` e i certificati nel volume di Caddy non vengono toccati.
 
