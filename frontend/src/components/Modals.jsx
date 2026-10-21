@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useUI } from '../store/useUI.js'
 import { shouldDismiss, trackVelocity } from '../lib/gesture.js'
+import { realignFixed } from '../lib/viewport.js'
 
 // One bottom sheet (or centered dialog) with swipe-to-dismiss.
 function Sheet({ sheet }) {
@@ -87,7 +88,8 @@ function Sheet({ sheet }) {
 export default function Modals() {
   const sheets = useUI(s => s.sheets)
 
-  // lock the page behind any open sheet (iOS-safe)
+  // lock the page behind any open sheet (iOS-safe), then make WebKit recompute where the
+  // fixed tab bar belongs once the page is unpinned (see lib/viewport.js)
   useEffect(() => {
     if (!sheets.length) return
     const y = window.scrollY || 0
@@ -96,6 +98,7 @@ export default function Modals() {
     return () => {
       b.position = b.top = b.left = b.right = b.width = ''
       window.scrollTo(0, y)
+      realignFixed()
     }
   }, [sheets.length > 0])
 
