@@ -32,6 +32,7 @@ export default class ErrorBoundary extends Component {
           <div style={{ height: 8 }} />
           <Button variant="danger" icon="trash" onClick={() => {
             useStore.getState().update(s => { s.active = null })
+            useStore.getState().flushLocal()
             location.reload()
           }}>{t('Discard the running workout')}</Button>
         </>}

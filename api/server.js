@@ -233,17 +233,23 @@ function json(res, code, obj, extraHeaders) {
   res.writeHead(code, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', ...(extraHeaders || {}) });
   res.end(body);
 }
+// Errors carry the HTTP status the dispatcher answers with. An oversized body is drained
+// (up to 4x the limit) before replying: destroying the socket mid-upload meant the client
+// saw a connection reset instead of a 413 it could act on.
+const httpError = (status, message) => Object.assign(new Error(message), { status });
 function readBody(req) {
   return new Promise((resolve, reject) => {
-    let size = 0; const chunks = [];
+    let size = 0, tooBig = false; const chunks = [];
     req.on('data', d => {
       size += d.length;
-      if (size > MAX_BODY) { reject(new Error('body too large')); req.destroy(); return; }
+      if (size > MAX_BODY * 4) { reject(httpError(413, 'body too large')); req.destroy(); return; }
+      if (size > MAX_BODY) { tooBig = true; chunks.length = 0; return; }
       chunks.push(d);
     });
     req.on('end', () => {
+      if (tooBig) return reject(httpError(413, 'body too large'));
       try { resolve(chunks.length ? JSON.parse(Buffer.concat(chunks).toString('utf8')) : {}); }
-      catch { reject(new Error('bad json')); }
+      catch { reject(httpError(400, 'bad json')); }
     });
     req.on('error', reject);
   });
@@ -589,6 +595,7 @@ http.createServer(async (req, res) => {
   if (!handler) return json(res, 404, { error: 'not found' });
   try { await handler(req, res); }
   catch (e) {
+    if (e && e.status >= 400 && e.status < 500) { if (!res.headersSent) json(res, e.status, { error: e.message }); return; }
     console.error(key, e);
     if (!res.headersSent) json(res, 500, { error: 'server error' });
   }

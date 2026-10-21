@@ -816,4 +816,7 @@ export default {
   'Thigh': 'Muslo',
   'in 30 days': 'en 30 días',
   'Add your waist measurement': 'Añade la medida de tu cintura',
+  'Sync failed: your data is larger than the server accepts. Export a backup from Settings.': 'Error de sincronización: tus datos superan el límite del servidor. Exporta una copia desde Ajustes.',
+  'This device is out of storage space. Your data is still saved on the server.': 'Este dispositivo no tiene espacio. Tus datos siguen guardados en el servidor.',
+  'This device is out of storage space. Export a backup from Settings now.': 'Este dispositivo no tiene espacio. Exporta ya una copia desde Ajustes.',
 }

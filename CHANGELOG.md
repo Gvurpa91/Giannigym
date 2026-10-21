@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Stress test fixes
+
+- The API answers an oversized body with 413 (it used to reset the connection) and malformed
+  JSON with 400 (it used to be a 500); a new test boots the server to keep it that way.
+- The app writes its state to browser storage 300 ms after the last change instead of on
+  every tap, flushes when hidden or closed, and no longer loses a change when storage is full
+  (it says so once instead). A sync refused for size is reported too.
+- History renders 40 workouts at a time.
+- An exhaustive program-builder test covers all 1800 questionnaire combinations.
+- Results and how to rerun everything: `docs/STRESS_TEST.md`, `scripts/stress/`.
+
 ### One-command updates
 
 - `sudo giannigym-update` backs up `data/`, pulls the code as the checkout's owner (git

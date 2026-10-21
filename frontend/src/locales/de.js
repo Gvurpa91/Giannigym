@@ -834,4 +834,7 @@ export default {
   'Thigh': 'Oberschenkel',
   'in 30 days': 'in 30 Tagen',
   'Add your waist measurement': 'Taillenumfang eintragen',
+  'Sync failed: your data is larger than the server accepts. Export a backup from Settings.': 'Synchronisierung fehlgeschlagen: Deine Daten sind größer, als der Server annimmt. Exportiere ein Backup in den Einstellungen.',
+  'This device is out of storage space. Your data is still saved on the server.': 'Auf diesem Gerät ist kein Speicher mehr frei. Deine Daten sind weiterhin auf dem Server gespeichert.',
+  'This device is out of storage space. Export a backup from Settings now.': 'Auf diesem Gerät ist kein Speicher mehr frei. Exportiere jetzt ein Backup in den Einstellungen.',
 }

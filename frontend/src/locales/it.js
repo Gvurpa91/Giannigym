@@ -816,4 +816,7 @@ export default {
   'Thigh': 'Coscia',
   'in 30 days': 'in 30 giorni',
   'Add your waist measurement': 'Aggiungi la misura della vita',
+  'Sync failed: your data is larger than the server accepts. Export a backup from Settings.': 'Sincronizzazione non riuscita: i tuoi dati superano il limite del server. Esporta un backup dalle Impostazioni.',
+  'This device is out of storage space. Your data is still saved on the server.': 'Spazio esaurito su questo dispositivo. I tuoi dati restano salvati sul server.',
+  'This device is out of storage space. Export a backup from Settings now.': 'Spazio esaurito su questo dispositivo. Esporta subito un backup dalle Impostazioni.',
 }

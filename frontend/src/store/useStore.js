@@ -1,11 +1,13 @@
 import { create } from 'zustand'
 import { api } from '../lib/api.js'
 import { localTZ } from '../lib/format.js'
+import { t } from '../lib/i18n.js'
 import { registerCustom } from '../lib/exercises.js'
 import { DEMO, DEMO_SEEDED } from '../lib/demo.js'
 import { MOBILE, nativeLoad, nativeSave, syncReminder } from '../lib/mobile.js'
 
 const KEY = 'gym_state_v1'
+let warned413 = false
 export const DEF = {
   unit: 'kg', restSec: 90, sound: true, keepAwake: true, lang: 'en',
   theme: 'dark', accent: 'volt', body: 'male', targetW: null,
@@ -47,11 +49,30 @@ export const useStore = create((set, get) => {
     saveTm = setTimeout(() => { saveTm = null; nativeSave(get().S); syncReminder(get().S) }, 800)
   }
 
+  // The whole state is written to localStorage once things settle, not on every tap: with
+  // years of history each write serialises a megabyte or more, and doing it inline made every
+  // checked set wait for it. The write is flushed when the app is hidden or the page goes away,
+  // and a full storage no longer throws out of update() — that used to drop the change itself.
+  let writeTm = null
+  let storageWarned = false
+  const writeLocal = () => {
+    clearTimeout(writeTm); writeTm = null
+    try { localStorage.setItem(KEY, JSON.stringify(get().S)); storageWarned = false }
+    catch (e) {
+      if (storageWarned) return
+      storageWarned = true
+      import('./useUI.js').then(m => m.useUI.getState().toast(get().user
+        ? t('This device is out of storage space. Your data is still saved on the server.')
+        : t('This device is out of storage space. Export a backup from Settings now.'))).catch(() => {})
+    }
+  }
+  const scheduleWrite = () => { clearTimeout(writeTm); writeTm = setTimeout(writeLocal, 300) }
+
   const persist = (S, push = true) => {
     S._ts = Date.now()
     registerCustom(S.customEx)
-    localStorage.setItem(KEY, JSON.stringify(S))
     set({ S })
+    scheduleWrite()
     if (MOBILE) nativePersist()
     if (push && get().user) {
       clearTimeout(pushTm)
@@ -63,8 +84,10 @@ export const useStore = create((set, get) => {
   // (e.g. setting the reminder time then immediately backgrounding to test it). On mobile the
   // same applies to the file mirror — backgrounding is often the last thing before the OS
   // kills the app.
+  window.addEventListener('pagehide', () => { if (writeTm) writeLocal() })
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState !== 'hidden') return
+    if (writeTm) writeLocal()
     if (MOBILE && saveTm) {
       clearTimeout(saveTm)
       saveTm = null
@@ -95,6 +118,9 @@ export const useStore = create((set, get) => {
     // the app hangs off it, so an unconfigured instance renders exactly what it always did.
     config: null,
 
+    /** Write the pending state to localStorage now (before a reload, for instance). */
+    flushLocal() { if (writeTm) writeLocal() },
+
     // Mutate a draft of S via producer fn, then persist + schedule sync.
     update(mut, push = true) {
       const S = clone(get().S)
@@ -116,7 +142,14 @@ export const useStore = create((set, get) => {
       if (!get().user) return
       clearTimeout(pushTm)
       try { await api('/api/data', { method: 'PUT', body: JSON.stringify({ state: get().S }) }); localStorage.removeItem('gym_dirty') }
-      catch (e) { localStorage.setItem('gym_dirty', '1') }
+      catch (e) {
+        localStorage.setItem('gym_dirty', '1')
+        // Offline is retried quietly; a refusal for size never fixes itself, so say it once.
+        if (e && e.status === 413 && !warned413) {
+          warned413 = true
+          import('./useUI.js').then(m => m.useUI.getState().toast(t('Sync failed: your data is larger than the server accepts. Export a backup from Settings.'))).catch(() => {})
+        }
+      }
     },
     async pullState() {
       try {
