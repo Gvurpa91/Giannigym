@@ -794,4 +794,11 @@ export default {
   'Body part': 'Partie du corps',
   'Type the weight': 'Saisir le poids',
   'Tap the number to type it · drag the bar to fine-tune': 'Touchez le nombre pour le saisir · faites glisser la barre pour ajuster',
+  'Last backup: {0}': 'Dernière sauvegarde : {0}',
+  'No backup yet': 'Pas encore de sauvegarde',
+  'Time for a backup': 'C’est l’heure d’une sauvegarde',
+  'Last backup: {0}. Save a copy in Files or iCloud, so a server problem can never cost you your history.': 'Dernière sauvegarde : {0}. Gardez une copie dans Fichiers ou iCloud : un problème de serveur ne vous coûtera jamais votre historique.',
+  'Save a copy in Files or iCloud, so a server problem can never cost you your history.': 'Gardez une copie dans Fichiers ou iCloud : un problème de serveur ne vous coûtera jamais votre historique.',
+  'Export now': 'Exporter',
+  'Later': 'Plus tard',
 }

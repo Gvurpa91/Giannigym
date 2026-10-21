@@ -794,4 +794,11 @@ export default {
   'Body part': '신체 부위',
   'Type the weight': '무게 입력',
   'Tap the number to type it · drag the bar to fine-tune': '숫자를 눌러 직접 입력 · 막대를 끌어 미세 조정',
+  'Last backup: {0}': '마지막 백업: {0}',
+  'No backup yet': '아직 백업 없음',
+  'Time for a backup': '백업할 시간이에요',
+  'Last backup: {0}. Save a copy in Files or iCloud, so a server problem can never cost you your history.': '마지막 백업: {0}. 파일 앱이나 iCloud에 사본을 저장하면 서버 문제로 기록을 잃지 않아요.',
+  'Save a copy in Files or iCloud, so a server problem can never cost you your history.': '파일 앱이나 iCloud에 사본을 저장하면 서버 문제로 기록을 잃지 않아요.',
+  'Export now': '지금 내보내기',
+  'Later': '나중에',
 }

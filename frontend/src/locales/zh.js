@@ -794,4 +794,11 @@ export default {
   'Body part': '身体部位',
   'Type the weight': '输入体重',
   'Tap the number to type it · drag the bar to fine-tune': '点数字可直接输入 · 拖动滑条微调',
+  'Last backup: {0}': '上次备份：{0}',
+  'No backup yet': '尚未备份',
+  'Time for a backup': '该备份了',
+  'Last backup: {0}. Save a copy in Files or iCloud, so a server problem can never cost you your history.': '上次备份：{0}。在“文件”或 iCloud 中保存一份副本，服务器出问题也不会丢失记录。',
+  'Save a copy in Files or iCloud, so a server problem can never cost you your history.': '在“文件”或 iCloud 中保存一份副本，服务器出问题也不会丢失记录。',
+  'Export now': '立即导出',
+  'Later': '稍后',
 }

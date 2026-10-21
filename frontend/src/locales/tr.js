@@ -794,4 +794,11 @@ export default {
   'Body part': 'Vücut bölgesi',
   'Type the weight': 'Ağırlığı yaz',
   'Tap the number to type it · drag the bar to fine-tune': 'Yazmak için sayıya dokun · ince ayar için çubuğu sürükle',
+  'Last backup: {0}': 'Son yedek: {0}',
+  'No backup yet': 'Henüz yedek yok',
+  'Time for a backup': 'Yedekleme zamanı',
+  'Last backup: {0}. Save a copy in Files or iCloud, so a server problem can never cost you your history.': 'Son yedek: {0}. Dosyalar’a veya iCloud’a bir kopya kaydet; böylece sunucu sorunu geçmişini asla silmez.',
+  'Save a copy in Files or iCloud, so a server problem can never cost you your history.': 'Dosyalar’a veya iCloud’a bir kopya kaydet; böylece sunucu sorunu geçmişini asla silmez.',
+  'Export now': 'Şimdi dışa aktar',
+  'Later': 'Sonra',
 }

@@ -794,4 +794,11 @@ export default {
   'Body part': 'Часть тела',
   'Type the weight': 'Ввести вес',
   'Tap the number to type it · drag the bar to fine-tune': 'Нажмите на число, чтобы ввести его · тяните полосу для точной настройки',
+  'Last backup: {0}': 'Последняя копия: {0}',
+  'No backup yet': 'Копий пока нет',
+  'Time for a backup': 'Пора сделать копию',
+  'Last backup: {0}. Save a copy in Files or iCloud, so a server problem can never cost you your history.': 'Последняя копия: {0}. Сохраните копию в «Файлы» или iCloud, чтобы сбой сервера не стоил вам истории.',
+  'Save a copy in Files or iCloud, so a server problem can never cost you your history.': 'Сохраните копию в «Файлы» или iCloud, чтобы сбой сервера не стоил вам истории.',
+  'Export now': 'Экспортировать',
+  'Later': 'Позже',
 }
