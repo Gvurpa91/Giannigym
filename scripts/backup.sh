@@ -1,7 +1,7 @@
 #!/bin/sh
 # Daily copy of GianniGym's data folder (profiles, passkeys, every user's workouts).
 #
-#   sudo /opt/giannigym/scripts/backup.sh            # run by hand
+#   giannigym-backup                                 # run by hand (asks for sudo itself)
 #   scripts/server-setup.sh schedules it every night
 #
 # Keeps the last KEEP archives (default 14) in BACKUP_DIR (default <repo>/backups), plus a
@@ -9,6 +9,9 @@
 # protect against losing the whole server: copy an archive elsewhere now and then, e.g.
 #   scp -i <key> opc@<server>:/opt/giannigym/backups/latest.tgz ~/Desktop/
 set -eu
+
+# data/ belongs to root (the API container writes it): elevate when run as a normal user.
+if [ "$(id -u)" != 0 ]; then exec sudo "$(readlink -f "$0")" "$@"; fi
 
 ROOT=$(CDPATH='' cd -- "$(dirname -- "$(readlink -f "$0")")/.." && pwd)
 DATA=${DATA_DIR:-$ROOT/data}
