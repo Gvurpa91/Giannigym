@@ -871,4 +871,5 @@ export default {
   'Continue': '继续',
   'Keep going — add more under “Exercises” at the top': '继续 — 在顶部“动作”里添加更多',
   '1Y': '1年',
+  'skipped': '已跳过',
 }

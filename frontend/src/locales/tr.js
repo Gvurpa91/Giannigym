@@ -871,4 +871,5 @@ export default {
   'Continue': 'Devam',
   'Keep going — add more under “Exercises” at the top': 'Devam et — üstteki “Egzersizler”den daha fazla ekle',
   '1Y': '1Y',
+  'skipped': 'atlandı',
 }

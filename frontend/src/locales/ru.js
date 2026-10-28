@@ -871,4 +871,5 @@ export default {
   'Continue': 'Продолжить',
   'Keep going — add more under “Exercises” at the top': 'Продолжай — добавь ещё через «Упражнения» вверху',
   '1Y': '1Г',
+  'skipped': 'пропущен',
 }

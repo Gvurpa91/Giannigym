@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
@@ -60,6 +60,8 @@ function Elapsed({ start }) {
    else (other exercises, adding one, finishing, discarding) sits behind the "Exercises" sheet;
    the full set list sits below the fold for anyone who wants to edit a past set. */
 
+// A set still to do: not logged and not skipped on purpose.
+const isOpen = s => !s.done && !s.skip
 const clock = sec => Math.floor(sec / 60) + ':' + String(Math.max(0, sec) % 60).padStart(2, '0')
 const cap = n => (n ? n.charAt(0).toUpperCase() + n.slice(1) : n)
 
@@ -179,12 +181,14 @@ function ActiveWorkout() {
 
   // Which exercise of the unit is up: in a superset, the one with the fewest sets logged, so
   // the rounds alternate A1, A2, A1, A2 without anyone having to switch by hand.
-  const doneOf = idx => A.entries[idx].sets.filter(s => s.done).length
-  const open = unit.filter(i => A.entries[i].sets.some(s => !s.done))
+  const doneOf = idx => A.entries[idx].sets.filter(s => !isOpen(s)).length
+  const open = unit.filter(i => A.entries[i].sets.some(isOpen))
   const autoE = open.length ? open.reduce((b, i) => (doneOf(i) < doneOf(b) ? i : b), open[0]) : unit[0]
   const eIdx = pickE != null && unit.includes(pickE) ? pickE : autoE
   const entry = eIdx != null ? A.entries[eIdx] : null
 
+  // The steppers and the button sit at the top: whenever the set on screen changes, go back there.
+  const toTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
   const mutEntry = (idx, fn) => update(s => { fn(s.active.entries[idx]) }, true)
   // Clearing an optional field drops the key rather than storing null, so a set only carries
   // what was actually logged — in the session, in history and in a backup.
@@ -201,8 +205,8 @@ function ActiveWorkout() {
     else e.sets.push({ w: l ? l.w : (tg.weight || 0), r: l ? l.r : (tg.reps || 8), done: false })
   })
   const removeSet = idx => mutEntry(idx, e => { if (e.sets.length > 1) e.sets.pop() })
-  const goUnit = k => { setPickE(null); setPickS(null); update(s => { s.active.cur = units[k][0] }) }
-  const jump = idx => { setPickS(null); setPickE(idx); update(s => { s.active.cur = idx }) }
+  const goUnit = k => { setPickE(null); setPickS(null); update(s => { s.active.cur = units[k][0] }); toTop() }
+  const jump = idx => { setPickS(null); setPickE(idx); update(s => { s.active.cur = idx }); toTop() }
 
   // A timed set is held, not typed. The work timer records what was actually held — an early
   // finish logs 0:38 of a 0:45 target rather than crediting the full prescription — and then
@@ -224,25 +228,39 @@ function ActiveWorkout() {
       e.sets[i].done = !e.sets[i].done
       nowDone = e.sets[i].done
       if (e.sets[i].done) {
+        delete e.sets[i].skip
         beep(S.sound, 1040, 0.12); vibrate(30)
         const isLastExInUnit = idx === unit[unit.length - 1]
-        const unitDone = unit.every(ui => (ui === idx ? e : A.entries[ui]).sets.every(x => x.done))
+        const unitDone = unit.every(ui => (ui === idx ? e : A.entries[ui]).sets.every(x => !isOpen(x)))
         if (isLastExInUnit && !unitDone) startRest(S.restSec)
         else if (unitDone) stopRest()
         if (unitDone && isLastUnit) workoutDone = true      // last exercise's last set → done
         // Only reps training has a "working weight" worth confirming — a bodyweight plank
         // has nothing to put in that slider.
-        if (e.sets.every(x => x.done)) { exJustDone = true; if (m === 'reps' && !e.asked) { e.asked = true; askTop = true } }
+        if (e.sets.every(x => !isOpen(x))) { exJustDone = true; if (m === 'reps' && !e.asked) { e.asked = true; askTop = true } }
       }
     })
     setPickS(null); setPickE(null)
     setLast(nowDone ? { e: idx, s: i } : null)
+    if (nowDone) toTop()
     // reps: topWeight first (it chains into the finish/continue prompt on the last unit).
     // cardio/timed or already-confirmed: go straight to the prompt.
     if (askTop) topWeightSheet(idx)
     else if (workoutDone) workoutCompleteSheet()
     else if (exJustDone && cardioEntry) useUI.getState().toast(t('Cardio logged'))
     else if (exJustDone && m === 'time') useUI.getState().toast(t('Hold logged'))
+  }
+
+  // Skip the set on screen: it stays unlogged, is no longer offered on its own, and can still be
+  // done later by tapping it. Skipping the last open set of the workout offers to finish.
+  const skip = (idx, i) => {
+    let workoutDone = false
+    mutEntry(idx, e => {
+      e.sets[i].skip = true
+      workoutDone = isLastUnit && unit.every(ui => (ui === idx ? e : A.entries[ui]).sets.every(x => !isOpen(x)))
+    })
+    setPickS(null); setPickE(null); setLast(null); stopRest(); toTop()
+    if (workoutDone) workoutCompleteSheet()
   }
 
   // Live-presence heartbeat so the admin dashboard can show who's training now. Signed-in only —
@@ -271,6 +289,23 @@ function ActiveWorkout() {
       api('/api/activity', { method: 'POST', body: JSON.stringify({ active: false }) }).catch(() => {})
     }
   }, [])
+
+  // The animation takes whatever height is left once the button fits on screen: big on a tall
+  // phone, smaller when a long name, a superset or the effort row needs the room — so "Set done"
+  // and "Skip" are never below the fold. Measured, because those heights can't be known in CSS.
+  const fitKey = `${eIdx}:${pickS ? pickS.s : ''}:${effortOf(S)}:${S.gifSize}:${A.entries.length}`
+  useLayoutEffect(() => {
+    const fit = () => {
+      const img = document.querySelector('.focus .exmedia.compact:not(.mini) img')
+      const btn = document.querySelector('.focus .fx-actions')
+      if (!img || !btn) return
+      const room = window.innerHeight - 12 - (btn.getBoundingClientRect().bottom + window.scrollY)
+      img.style.height = Math.round(Math.min(320, Math.max(120, img.getBoundingClientRect().height + room))) + 'px'
+    }
+    fit()
+    window.addEventListener('resize', fit)
+    return () => window.removeEventListener('resize', fit)
+  }, [fitKey])
 
   const discard = () => confirmSheet({ title: t('Discard workout?'), message: t('The sets you logged in this session will be lost.'), confirmText: t('Discard'), danger: true, onConfirm: () => { update(s => { s.active = null }); stopRest(); nav('/home') } })
   const addExercise = () => exercisePicker(ex => exConfigSheet(ex, null, cfg => update(s => {
@@ -308,10 +343,10 @@ function ActiveWorkout() {
   const kind = effortOf(S)
   const eff = EFFORT[kind]
   const c3 = mode === 'reps' && eff ? { ...eff, eff: kind, dec: true, opt: true, u: t(eff.hd) } : null
-  const firstOpen = entry.sets.findIndex(s => !s.done)
+  const firstOpen = entry.sets.findIndex(isOpen)
   const sIdx = pickS && pickS.e === eIdx && pickS.s < entry.sets.length ? pickS.s : (firstOpen < 0 ? entry.sets.length - 1 : firstOpen)
   const set = entry.sets[sIdx]
-  const unitDone = unit.every(i => A.entries[i].sets.every(s => s.done))
+  const unitDone = unit.every(i => A.entries[i].sets.every(s => !isOpen(s)))
   const lastTime = lastEntryFor(S, entry.id)
   const note = noteFor(S, entry.id)
   const plan = entry.plan
@@ -328,7 +363,7 @@ function ActiveWorkout() {
   // What comes after the set just logged, for the rest screen.
   const nextLine = (() => {
     if (!open.length) return isLastUnit ? null : cap(exOr(A.entries[units[unitIdx + 1][0]].id).n)
-    const e2 = A.entries[autoE], i2 = e2.sets.findIndex(s => !s.done)
+    const e2 = A.entries[autoE], i2 = e2.sets.findIndex(isOpen)
     const lbl = t('Set {0}', i2 + 1) + ' · ' + setLabel(e2.id, e2.sets[i2], e2.target)
     return autoE === eIdx ? lbl : cap(exOr(e2.id).n) + ' · ' + lbl
   })()
@@ -369,7 +404,7 @@ function ActiveWorkout() {
 
     <div className="fx-dots" aria-label={t('Set {0} of {1}', sIdx + 1, entry.sets.length)}>
       {entry.sets.map((s, i) => <button key={i} aria-label={t('Set {0}', i + 1)}
-        className={(s.done ? 'done' : '') + (i === sIdx ? ' cur' : '')} onClick={() => setPickS({ e: eIdx, s: i })} />)}
+        className={(s.done ? 'done' : s.skip ? 'skip' : '') + (i === sIdx ? ' cur' : '')} onClick={() => setPickS({ e: eIdx, s: i })} />)}
       <span>{t('Set {0} of {1}', sIdx + 1, entry.sets.length)}</span>
     </div>
 
@@ -377,33 +412,39 @@ function ActiveWorkout() {
       <BigStepper col={c1} value={set[c1.f]} onStep={d => step(c1, d)} onType={v => type(c1, v)} />
       <BigStepper col={c2} value={set[c2.f]} onStep={d => step(c2, d)} onType={v => type(c2, v)} />
       {c3 && <BigStepper small col={c3} value={set[c3.f]} onStep={d => step(c3, d)} onType={v => type(c3, v)} />}
-      <div className="fx-info">
-        {best > 0 && <span>{t('Best:')} {fmtNum(best)} {S.unit}</span>}
-        {lastTime && <span>{t('Last time')} {lastTime.sets.map(s => setLabel(entry.id, s, lastTime.target)).join(', ')}</span>}
-        {plan && plan.why && plan.kind !== 'off' && <span className={'fx-plan' + (plan.kind === 'deload' ? ' warn' : '')}>
-          <Icon name={plan.kind === 'up' ? 'arrowUp' : plan.kind === 'deload' ? 'arrowDown' : 'lightbulb'} />{t(...plan.why)}</span>}
+    </div>
+
+    <div className="fx-actions">
+      {primary}
+      <div className="fx-subs">
+        {working
+          ? <button className="fx-sub" onClick={stopWork}>{t('Cancel')}</button>
+          : set.done
+            ? <button className="fx-sub" onClick={() => toggle(eIdx, sIdx)}>{t('Undo set')}</button>
+            : <>
+              {timed && <button className="fx-sub" onClick={() => toggle(eIdx, sIdx)}>{t('Mark as done')}</button>}
+              {!set.skip && <button className="fx-sub" onClick={() => skip(eIdx, sIdx)}>{t('Skip')}</button>}
+            </>}
       </div>
     </div>
 
-    {/* The note is what you wrote for exactly this moment, so it sits right above the button. */}
+    {/* Below the button: what to know about this lift — your best, last time, the plan, your note. */}
+    <div className="fx-info">
+      {best > 0 && <span>{t('Best:')} {fmtNum(best)} {S.unit}</span>}
+      {lastTime && <span>{t('Last time')} {lastTime.sets.map(s => setLabel(entry.id, s, lastTime.target)).join(', ')}</span>}
+      {plan && plan.why && plan.kind !== 'off' && <span className={'fx-plan' + (plan.kind === 'deload' ? ' warn' : '')}>
+        <Icon name={plan.kind === 'up' ? 'arrowUp' : plan.kind === 'deload' ? 'arrowDown' : 'lightbulb'} />{t(...plan.why)}</span>}
+    </div>
     {note
       ? <button className="xnote" onClick={() => exerciseNoteSheet(ex)}><Icon name="pencil" /><span className="xnote-t">{note}</span></button>
       : <button className="addnote" onClick={() => exerciseNoteSheet(ex)}><Icon name="pencil" />{t('Add note')}</button>}
 
-    <div className="fx-actions">
-      {primary}
-      {working
-        ? <button className="fx-sub" onClick={stopWork}>{t('Cancel')}</button>
-        : set.done
-          ? <button className="fx-sub" onClick={() => toggle(eIdx, sIdx)}>{t('Undo set')}</button>
-          : timed && <button className="fx-sub" onClick={() => toggle(eIdx, sIdx)}>{t('Mark as done')}</button>}
-    </div>
-
     <h4 className="sec">{t('All sets')}</h4>
     <div className="fx-sets">
       {entry.sets.map((s, i) => <div key={i} className={'fx-set' + (i === sIdx ? ' cur' : '') + (s.done ? ' done' : '')}>
-        <button className="fx-set-m" onClick={() => setPickS({ e: eIdx, s: i })}>
+        <button className="fx-set-m" onClick={() => { setPickS({ e: eIdx, s: i }); toTop() }}>
           <span className="fx-set-n">{i + 1}</span><span>{setLabel(entry.id, s, entry.target)}</span>
+          {s.skip && !s.done && <span className="fx-set-skip">{t('skipped')}</span>}
         </button>
         <Check checked={s.done} onChange={() => toggle(eIdx, i)} />
       </div>)}

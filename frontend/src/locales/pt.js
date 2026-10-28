@@ -871,4 +871,5 @@ export default {
   'Continue': 'Continuar',
   'Keep going — add more under “Exercises” at the top': 'Continua — adiciona mais em “Exercícios” no topo',
   '1Y': '1A',
+  'skipped': 'pulada',
 }

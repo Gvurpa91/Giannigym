@@ -993,9 +993,10 @@ export function finishWorkout() {
   const A = S().active
   if (!A) return
   const done = setsDoneActive(A)
-  const total = A.entries.reduce((n, e) => n + e.sets.length, 0)
+  // Sets skipped on purpose are not "still unchecked" — you already decided about them.
+  const left = A.entries.reduce((n, e) => n + e.sets.filter(s => !s.done && !s.skip).length, 0)
   if (!done) { confirmSheet({ title: t('Nothing logged yet'), message: t('You haven’t checked off any sets. Finish the workout anyway?'), confirmText: t('Finish anyway'), onConfirm: doFinishWorkout }); return }
-  if (done < total) { confirmSheet({ title: t('Finish early?'), message: t(total - done === 1 ? '{0} set still unchecked. Finish the workout now?' : '{0} sets still unchecked. Finish the workout now?', total - done), confirmText: t('Finish workout'), onConfirm: doFinishWorkout }); return }
+  if (left) { confirmSheet({ title: t('Finish early?'), message: t(left === 1 ? '{0} set still unchecked. Finish the workout now?' : '{0} sets still unchecked. Finish the workout now?', left), confirmText: t('Finish workout'), onConfirm: doFinishWorkout }); return }
   doFinishWorkout()
 }
 function doFinishWorkout() {
@@ -1019,7 +1020,7 @@ function doFinishWorkout() {
     // as "0 reps". It is what the progression engine works from.
     // The exercise note in force is stamped on too, so history keeps what you had written then.
     entries: A.entries.map(e => {
-      const en = { id: e.id, sets: e.sets, topW: e.topW || null, target: e.target || null }
+      const en = { id: e.id, sets: e.sets.map(({ skip, ...s }) => s), topW: e.topW || null, target: e.target || null }
       const note = noteFor(st, e.id)
       if (note) en.note = note
       return en

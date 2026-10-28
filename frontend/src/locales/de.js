@@ -889,4 +889,5 @@ export default {
   'Continue': 'Weiter',
   'Keep going — add more under “Exercises” at the top': 'Mach weiter — mehr hinzufügen unter „Übungen“ oben',
   '1Y': '1J',
+  'skipped': 'übersprungen',
 }
