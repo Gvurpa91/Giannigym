@@ -7,7 +7,6 @@ import { ACCENTS } from './lib/format.js'
 import { setLang, useLang } from './lib/i18n.js'
 import { setNav } from './lib/nav.js'
 import { useWakeLock } from './lib/wakelock.js'
-import { startFlow } from './sheets.jsx'
 import Icon from './components/Icon.jsx'
 import TabBar from './components/TabBar.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
@@ -33,10 +32,10 @@ bindUI(useUI)   // lets the shared controls open sheets without importing the st
 
 function applyPrefs(theme, accent) {
   const de = document.documentElement
-  de.dataset.theme = theme === 'light' ? 'light' : 'dark'
-  de.dataset.accent = ACCENTS[accent] ? accent : 'volt'
+  de.dataset.theme = theme === 'dark' ? 'dark' : 'light'
+  de.dataset.accent = ACCENTS[accent] ? accent : 'signal'
   const meta = document.querySelector('meta[name="theme-color"]')
-  if (meta) meta.content = de.dataset.theme === 'light' ? '#f3f4f6' : '#07080c'
+  if (meta) meta.content = de.dataset.theme === 'dark' ? '#0f0f10' : '#f6f5f1'
 }
 
 function Shell() {
@@ -47,6 +46,10 @@ function Shell() {
   const langV = useLang()   // re-renders the whole shell when the language (pack) changes
   useEffect(() => { setNav(navigate) }, [navigate])
   useEffect(() => { applyPrefs(S.theme, S.accent) }, [S.theme, S.accent])
+  // One-time switch to the v2 design for profiles saved under the old one (dark + volt).
+  // Keyed on the version, so a state pulled from the server later is migrated too.
+  const update = useStore(s => s.update)
+  useEffect(() => { if (S.uiV !== 2) update(s => { s.uiV = 2; s.theme = 'light'; if (!ACCENTS[s.accent] || s.accent === 'volt') s.accent = 'signal' }) }, [S.uiV])
   useEffect(() => { setLang(S.lang || 'en') }, [S.lang])
   useEffect(() => { document.documentElement.lang = S.lang || 'en' }, [langV, S.lang])
   // every tab/route change starts at the top of the page
@@ -92,7 +95,7 @@ function Shell() {
           )}
         </ErrorBoundary>
       </div>
-      <TabBar onStart={startFlow} />
+      <TabBar />
       <RestTimer />
       <Modals />
       <Toast />

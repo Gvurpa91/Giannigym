@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { EXDB, allExercises, equipmentOf } from '../lib/exercises.js'
 import { bestWeightFor } from '../lib/history.js'
@@ -11,6 +12,7 @@ import { Button } from '../components/ui.jsx'
 import ExerciseFilters from '../components/ExerciseFilters.jsx'
 
 export default function Library() {
+  const nav = useNavigate()
   const S = useStore(s => s.S)
   const [q, setQ] = useState('')
   const [bp, setBp] = useState('')
@@ -25,11 +27,12 @@ export default function Library() {
   const f = eqOn ? base.filter(e => e.eq === eqOn) : base
 
   return <>
-    <div className="hdr"><div><h1>{t('Exercises')}</h1><div className="sub">{t('{0} exercises with animations', EXDB.length)}</div></div></div>
+    <div className="hdr"><button className="iconbtn" onClick={() => nav('/plan')} aria-label={t('Workouts')}><Icon name="chevronLeft" /></button>
+      <div style={{ flex: 1, marginLeft: 12 }}><h1>{t('Exercises')}</h1><div className="sub">{t('{0} exercises with animations', EXDB.length)}</div></div></div>
     <div className="search" style={{ marginBottom: 10 }}><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
       <input className="input" placeholder={t('Search…')} value={q} onChange={e => { setQ(e.target.value); setShown(40) }} /></div>
     <ExerciseFilters bp={bp} onBp={b => { setBp(b); setEq(''); setShown(40) }} bpBase={searched}
-      eq={eqOn} onEq={x => { setEq(x); setShown(40) }} eqOpts={eqOpts} base={base} />
+      eq={eqOn} onEq={x => { setEq(x); setShown(40) }} eqOpts={eqOpts} base={base} count={f.length} />
     <div style={{ height: 12 }} />
     <div className="list">
       <div className="item" onClick={() => customExSheet(null, ex => exerciseDetailSheet(ex), q.trim())}>

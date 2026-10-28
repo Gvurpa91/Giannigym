@@ -290,7 +290,7 @@ export function bwDeltaColor(delta, currentW) {
   if (!delta) return 'var(--label-2)'
   if (!S().targetW) return 'var(--label)'
   const up = S().targetW > currentW
-  return (delta > 0) === up ? 'var(--acc)' : 'var(--red)'
+  return (delta > 0) === up ? 'var(--green)' : 'var(--red)'
 }
 function GoalSheet({ close }) {
   const st = S()
@@ -522,10 +522,9 @@ function ExercisePicker({ onPick, close }) {
       <div className="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
         <input className="input" placeholder={t('Search {0} exercises…', all.length)} value={q} onChange={e => { setQ(e.target.value); setShown(50) }} /></div>
       <ExerciseFilters bp={bp} onBp={b => { setBp(b); setEq(''); setShown(50) }} bpBase={searched} usage={chosenCount ? usage : null}
-        eq={eqOn} onEq={x => { setEq(x); setShown(50) }} eqOpts={eqOpts} base={base} />
-      <div className="pickcount small dim">{t('{0} exercises', f.length)}</div>
+        eq={eqOn} onEq={x => { setEq(x); setShown(50) }} eqOpts={eqOpts} base={base} count={f.length} />
     </div>
-    <div className="list">
+    <div className="list picklist">
       {bp !== '★' && <div className="item" onClick={() => customExSheet(null, ex => onPick(ex), q.trim())}>
         <div className="thumb thumb-x"><Icon name="sparkles" /></div>
         <div className="grow"><div className="tt">{t('Create your own exercise')}</div><div className="ss">{t('name + body part, no animation')}</div></div><Icon name="plus" className="chev" />
@@ -932,7 +931,7 @@ function WorkoutComplete({ close }) {
     <div className="muted small" style={{ marginBottom: 16 }}>{t('Every exercise done — great work. Finish up, or keep going and add another exercise.')}</div>
     <Button variant="primary" icon="flag" onClick={() => { close(); finishWorkout() }}>{t('Finish workout')}</Button>
     <div style={{ height: 8 }} />
-    <Button onClick={() => { close(); useUI.getState().toast(t('Keep going — tap “+ Add exercise” below')) }}>{t('Continue workout')}</Button>
+    <Button onClick={() => { close(); useUI.getState().toast(t('Keep going — add more under “Exercises” at the top')) }}>{t('Continue workout')}</Button>
   </div>
 }
 export const workoutCompleteSheet = () => ui().openSheet(close => <WorkoutComplete close={close} />, { kind: 'center' })

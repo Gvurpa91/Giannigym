@@ -31,18 +31,6 @@ function openOptionList(title, rows, value, onChange) {
   </>)
 }
 
-function FilterButton({ icon, label, value, active, onClick, onClear, clearLabel }) {
-  return <div className="fbtn-w">
-    <button className={'fbtn' + (active ? ' on' : '')} onClick={onClick}>
-      <Icon name={icon} className="fbtn-i" />
-      <span className="fbtn-m"><span className="fbtn-l">{label}</span><span className="fbtn-v capitalize">{value}</span></span>
-      {active
-        ? <span className="fbtn-x" role="button" aria-label={clearLabel} onClick={e => { e.stopPropagation(); onClear() }}><Icon name="xmark" /></span>
-        : <Icon name="chevronDown" className="fbtn-c" />}
-    </button>
-  </div>
-}
-
 /**
  * @param bp        '' = all, '★' = chosen, otherwise a body part
  * @param bpBase    exercises matching the search only (for the body-part counts)
@@ -50,24 +38,36 @@ function FilterButton({ icon, label, value, active, onClick, onClear, clearLabel
  * @param eq        selected equipment ('' = any), already reconciled with `eqOpts`
  * @param eqOpts    equipment values present in the current body-part/search result
  * @param base      that result, for the per-equipment counts
+ * @param count     how many exercises the filters leave
  */
-export default function ExerciseFilters({ bp, onBp, bpBase, usage, eq, onEq, eqOpts, base }) {
+// Body parts most people look for first; neck has two exercises and goes last.
+const ORDER = ['chest', 'back', 'upper legs', 'shoulders', 'upper arms', 'waist', 'lower legs', 'lower arms', 'cardio', 'neck']
+const PARTS = [...ORDER.filter(b => BODYPARTS.includes(b)), ...BODYPARTS.filter(b => !ORDER.includes(b))]
+
+// Body parts are a grid of big tiles — every option visible, one tap each. Equipment is a
+// secondary refinement, so it stays a single button opening a list.
+export default function ExerciseFilters({ bp, onBp, bpBase, usage, eq, onEq, eqOpts, base, count }) {
   const bpCounts = countBy(bpBase, 'bp')
-  const chosen = usage ? bpBase.filter(e => usage[e.id]).length : 0
-  const openBp = () => openOptionList(t('Body part'), [
-    ...(usage && Object.keys(usage).length ? [{ value: '★', label: t('Chosen'), count: chosen, icon: 'starFill' }] : []),
-    { value: '', label: t('All'), count: bpBase.length },
-    ...BODYPARTS.map(b => ({ value: b, label: t(b), count: bpCounts[b] || 0 })),
-  ], bp, onBp)
+  const tiles = [
+    { value: '', label: t('All') },
+    ...(usage && Object.keys(usage).length ? [{ value: '★', label: t('Chosen'), icon: 'starFill' }] : []),
+    ...PARTS.filter(b => bpCounts[b] || b === bp).map(b => ({ value: b, label: t(b) })),
+  ]
   const eqCounts = countBy(base, 'eq')
   const openEq = () => openOptionList(t('Equipment'), [
     { value: '', label: t('Any equipment'), count: base.length },
     ...eqOpts.map(x => ({ value: x, label: t(x), count: eqCounts[x] || 0 })),
   ], eq, onEq)
   return <div className="xfilters">
-    <FilterButton icon="figureStrength" label={t('Body part')} active={!!bp} onClick={openBp} onClear={() => onBp('')} clearLabel={t('All')}
-      value={bp === '★' ? t('Chosen') : bp ? t(bp) : t('All')} />
-    <FilterButton icon="dumbbell" label={t('Equipment')} active={!!eq} onClick={openEq} onClear={() => onEq('')} clearLabel={t('Any equipment')}
-      value={eq ? t(eq) : t('All')} />
+    <div className="bptiles" role="group" aria-label={t('Body part')}>
+      {tiles.map(x => <button key={x.value || '_all'} aria-pressed={bp === x.value} className={bp === x.value ? 'on' : ''} onClick={() => onBp(x.value)}>
+        {x.icon && <Icon name={x.icon} />}<span className="capitalize">{x.label}</span></button>)}
+    </div>
+    <div className="eqrow">
+      <span className="small dim">{t('{0} exercises', count ?? base.length)}</span>
+      <button className={'eqbtn' + (eq ? ' on' : '')} onClick={openEq}>
+        <span className="capitalize">{t('Equipment')}: {eq ? t(eq) : t('All').toLowerCase()}</span><Icon name="chevronDown" />
+      </button>
+    </div>
   </div>
 }

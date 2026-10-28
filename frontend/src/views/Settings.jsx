@@ -37,7 +37,12 @@ export default function Settings() {
     rd.onload = () => {
       try {
         const data = JSON.parse(rd.result)
-        if (!data.workouts || !data.routines) throw new Error('not an openGym backup')
+        // Shape-check before anything is replaced: a malformed file would otherwise be saved,
+        // synced to the profile, and break every screen that reads history on every device.
+        const arr = Array.isArray
+        if (!data || !arr(data.workouts) || !arr(data.routines)) throw new Error('not an openGym backup')
+        if (!data.workouts.every(w => w && typeof w.d === 'string' && arr(w.entries) && w.entries.every(e => e && e.id != null && arr(e.sets)))
+          || !data.routines.every(r => r && r.id != null && arr(r.ex))) throw new Error('the file is damaged')
         confirmSheet({ title: t('Import backup?'), message: t('This replaces all current data with the backup file.'), confirmText: t('Import'), danger: true, onConfirm: () => { replaceState(Object.assign(JSON.parse(JSON.stringify(DEF)), data), true); toast(t('Backup imported')) } })
       } catch (e) { toast(t('Import failed: {0}', e.message)) }
     }
@@ -152,8 +157,8 @@ export default function Settings() {
       <Row icon="moon" iconTint="var(--indigo)" title={t('Theme')}>
         <Segmented
           className="seg-inline"
-          options={[{ value: 'dark', icon: 'moon', label: t('Dark') }, { value: 'light', icon: 'sun', label: t('Light') }]}
-          value={S.theme === 'light' ? 'light' : 'dark'}
+          options={[{ value: 'light', icon: 'sun', label: t('Light') }, { value: 'dark', icon: 'moon', label: t('Dark') }]}
+          value={S.theme === 'dark' ? 'dark' : 'light'}
           onChange={v => update(s => { s.theme = v })}
         />
       </Row>
@@ -170,7 +175,7 @@ export default function Settings() {
         <span className="lrow-t">{t('Accent color')}</span>
         <div className="swatches">
           {Object.entries(ACCENTS).map(([k, c]) => (
-            <button key={k} className={'swatch' + ((S.accent || 'volt') === k ? ' on' : '')}
+            <button key={k} className={'swatch' + ((S.accent || 'signal') === k ? ' on' : '')}
               style={{ background: c }} onClick={() => update(s => { s.accent = k })} aria-label={k} />
           ))}
         </div>
