@@ -1,12 +1,11 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { EXIDX } from '../lib/exercises.js'
 import { lastBW, streakWeeks, setLabel, modeOf, effortOf } from '../lib/history.js'
-import { fmtNum, fmtDate, fmtVol, todayISO, weekKey } from '../lib/format.js'
-import { series as measureSeries, sitesWithData, change as measureChange, lengthUnit, SITE_LABEL } from '../lib/measures.js'
+import { fmtNum, fmtDate, todayISO, weekKey } from '../lib/format.js'
+import { series as measureSeries, sitesWithData, lengthUnit, SITE_LABEL } from '../lib/measures.js'
 import { t } from '../lib/i18n.js'
-import { bwSheet, goalSheet, calendarSheet, workoutDetailSheet, WorkoutRow, bwDeltaColor, measureSheet } from '../sheets.jsx'
+import { bwSheet, goalSheet, calendarSheet, workoutDetailSheet, bwDeltaColor, measureSheet } from '../sheets.jsx'
 import LineChart from '../components/LineChart.jsx'
 import Heatmap from '../components/Heatmap.jsx'
 import Icon from '../components/Icon.jsx'
@@ -130,34 +129,75 @@ function EffortCard({ S }) {
   </div>
 }
 
-// Stats = the analytics hub: all charts, progress and history live here.
-// Waist and other measurements (lib/measures.js): for fat loss with muscle gain, the line that
-// moves when the scale does not.
-function MeasuresCard({ S }) {
+// The one curve that matters most for this profile, big: waist by default (for fat loss with
+// muscle gain it is the number that moves when the scale does not), or weight, or any other
+// measured site. Logging and the weight goal live on the card itself.
+function HeroChart({ S, range }) {
   const sites = sitesWithData(S)
-  const [site, setSite] = useState('waist')
-  const cur = sites.includes(site) ? site : sites[0]
-  const unit = lengthUnit(S.unit)
-  const pts = cur ? measureSeries(S, cur, S.unit) : []
-  const d30 = cur ? measureChange(S, cur, 30, S.unit) : null
-  return <div className="card">
-    <div className="row between" style={{ marginBottom: 8 }}>
-      <h2 style={{ margin: 0 }}>{t('Measurements')}</h2>
-      <Button size="sm" icon="plus" onClick={measureSheet}>{t('Log')}</Button>
-    </div>
-    {!sites.length ? <div className="muted small">{t('Measure your waist every week or two: it is the most direct sign of belly fat going, even when the scale stands still.')}</div> : <>
-      {sites.length > 1 && <Segmented className="seg-range" value={cur} onChange={setSite} options={sites.map(k => ({ value: k, label: t(SITE_LABEL[k]) }))} />}
-      <div className="chart"><LineChart points={pts} h={150} unit={unit} color="var(--teal)" /></div>
-      <div className="small dim" style={{ marginTop: 6 }}>
-        {t(SITE_LABEL[cur])}: <b style={{ color: 'var(--label)' }}>{fmtNum(pts[pts.length - 1].y)} {unit}</b>
-        {d30 != null && <> · {t('30 days')}: <b style={{ color: d30 < 0 ? 'var(--green)' : d30 > 0 ? 'var(--orange)' : 'var(--label)' }}>{(d30 > 0 ? '+' : '') + fmtNum(d30)} {unit}</b></>}
+  const opts = ['waist', 'weight', ...sites.filter(k => k !== 'waist')]
+  const [pick, setPick] = useState(null)
+  const m = pick || (sites.includes('waist') || !S.bodyweight.length ? 'waist' : 'weight')
+  const isW = m === 'weight'
+  const from = range ? Date.now() - range * 86400000 : 0
+  const all = isW ? S.bodyweight.map(b => ({ t: b.t || new Date(b.d).getTime(), y: b.w, d: b.d })) : measureSeries(S, m, S.unit)
+  const pts = all.filter(p => p.t >= from)
+  const unit = isW ? S.unit : lengthUnit(S.unit)
+  const last = all[all.length - 1]
+  const delta = pts.length > 1 ? Math.round((pts[pts.length - 1].y - pts[0].y) * 10) / 10 : null
+  const label = k => (k === 'weight' ? t('Weight') : t(SITE_LABEL[k]))
+  const span = range === 30 ? t('in 1 month') : range === 90 ? t('in 3 months') : range === 365 ? t('in 1 year') : t('overall')
+  return <div className="phero">
+    <div className="phero-h">
+      <div className="phero-m">
+        <span className="phero-k">{label(m)}</span>
+        {last ? <span className="phero-v">{fmtNum(last.y)}<small> {unit}</small></span> : <span className="phero-e">{t('No entries yet')}</span>}
       </div>
-    </>}
+      {delta != null && <div className="phero-d"><b>{(delta > 0 ? '+' : delta < 0 ? '−' : '') + fmtNum(Math.abs(delta))} {unit}</b><span>{span}</span></div>}
+    </div>
+    {pts.length > 1
+      ? <div className="chart"><LineChart points={pts} h={120} unit={unit} goal={isW ? S.targetW : null} /></div>
+      : <div className="muted small">{isW
+        ? t("No entries yet — log your weight to start the curve. It's also asked before every workout.")
+        : t('Measure your waist every week or two: it is the most direct sign of belly fat going, even when the scale stands still.')}</div>}
+    <div className="phero-f">
+      <div className="phero-chips">{opts.map(k => <button key={k} className={k === m ? 'on' : ''} aria-pressed={k === m} onClick={() => setPick(k)}>{label(k)}</button>)}</div>
+      <div className="row" style={{ gap: 6 }}>
+        {isW && <button className="phero-b" onClick={goalSheet} aria-label={t('Goal')}><Icon name="target" />{S.targetW ? fmtNum(S.targetW) : ''}</button>}
+        <button className="phero-b" onClick={() => (isW ? bwSheet() : measureSheet())}><Icon name="plus" />{t('Log')}</button>
+      </div>
+    </div>
   </div>
 }
 
+// Strength at a glance: the exercises trained most, the heaviest set last time, and how far
+// that has moved inside the selected range. Tapping one opens its full curve below.
+function StrengthList({ S, range, onPick }) {
+  const from = range ? Date.now() - range * 86400000 : 0
+  const by = {}
+  for (const w of S.workouts) {
+    if ((w.start || Date.parse(w.d)) < from) continue
+    for (const e of w.entries) {
+      if (!EXIDX[e.id] || modeOf({ ...(e.target || {}), id: e.id }) !== 'reps') continue
+      const top = Math.max(0, ...e.sets.filter(x => x.done).map(x => x.w || 0))
+      if (top > 0) (by[e.id] = by[e.id] || []).push(top)
+    }
+  }
+  const rows = Object.entries(by).sort((a, b) => b[1].length - a[1].length).slice(0, 5)
+  if (!rows.length) return null
+  return <section className="plist">
+    <div className="plist-h"><h2>{t('Strength')}</h2></div>
+    {rows.map(([id, tops]) => {
+      const d = Math.round((tops[tops.length - 1] - tops[0]) * 10) / 10
+      return <button key={id} className="srow" onClick={() => onPick(id)}>
+        <span className="srow-n">{EXIDX[id].n}</span>
+        <b>{fmtNum(tops[tops.length - 1])} {S.unit}</b>
+        <span className="srow-d">{d ? (d > 0 ? '+' : '−') + fmtNum(Math.abs(d)) + ' ' + S.unit : '='}</span>
+      </button>
+    })}
+  </section>
+}
+
 export default function Stats() {
-  const nav = useNavigate()
   const S = useStore(s => s.S)
   const [range, setRange] = useState(90)
   const [exId, setExId] = useState(null)
@@ -167,10 +207,6 @@ export default function Stats() {
   const kind = displayScale(S)
   const hd = scaleName(kind)
 
-  const bwPts = S.bodyweight.filter(b => range === 0 || (b.t || new Date(b.d).getTime()) > now - range * 86400000)
-    .map(b => ({ t: b.t || new Date(b.d).getTime(), y: b.w, d: b.d }))
-  const bw30 = S.bodyweight.filter(b => (b.t || new Date(b.d).getTime()) > now - 30 * 86400000)
-  const bwDelta30 = bw30.length > 1 ? bw30[bw30.length - 1].w - bw30[0].w : null
   const monthW = S.workouts.filter(w => w.d.slice(0, 7) === todayISO().slice(0, 7)).length
 
   const exHist = [...new Set(S.workouts.flatMap(w => w.entries.map(e => e.id)))].filter(id => EXIDX[id]).sort((a, b) => EXIDX[a].n < EXIDX[b].n ? -1 : 1)
@@ -220,19 +256,41 @@ export default function Stats() {
   if (showE1) exOpts.push({ value: 'e1rm', label: t('Est. 1RM') })
   if (showEff) exOpts.push({ value: 'effort', label: t('Effort') })
 
-  return <>
-    <div className="hdr"><div><h1>{t('Stats')}</h1><div className="sub">{t('Progress & history')}</div></div>
-      <button className="iconbtn" onClick={() => nav('/history')} aria-label={t('History')}><Icon name="history" /></button></div>
+  const bwRange = S.bodyweight.filter(b => range === 0 || (b.t || new Date(b.d).getTime()) > now - range * 86400000)
+  const bwDelta = bwRange.length > 1 ? bwRange[bwRange.length - 1].w - bwRange[0].w : null
+  const bw = lastBW(S)
+  const wk = weekKey(todayISO())
+  const wDone = S.workouts.filter(w => weekKey(w.d) === wk).length
+  const planned = Object.keys(S.week).filter(k => S.week[k]).length
+  const pickEx = id => { setExId(id); setExMetric('top'); requestAnimationFrame(() => document.getElementById('exprog')?.scrollIntoView({ behavior: 'smooth', block: 'start' })) }
 
-    <div className="tiles">
-      <div className="tile"><div className="l"><Icon name="dumbbell" />{t('Workouts')}</div><div className="v">{S.workouts.length}</div></div>
-      <div className="tile"><div className="l"><Icon name="calendar" />{t('This month')}</div><div className="v">{monthW}</div></div>
-      <div className="tile"><div className="l"><Icon name="flame" />{t('Week streak')}</div><div className="v">{streakWeeks(S)}</div></div>
-      <div className="tile"><div className="l"><Icon name="scale" />{t('Weight 30d')}</div><div className="v" style={{ fontSize: 22, color: bwDelta30 === null ? 'inherit' : bwDeltaColor(bwDelta30, (lastBW(S) || {}).w || 0) }}>{bwDelta30 === null ? '—' : (bwDelta30 > 0 ? '+' : '') + fmtNum(bwDelta30) + ' ' + S.unit}</div></div>
+  return <div className="narrow stats">
+    <div className="hdr">
+      <h1>{t('Progress')}</h1>
+      <Segmented className="seg-mini" value={range} onChange={setRange}
+        options={[{ value: 30, label: '1M' }, { value: 90, label: '3M' }, { value: 365, label: '1Y' }, { value: 0, label: t('All') }]} />
     </div>
 
+    <HeroChart S={S} range={range} />
+
+    <div className="ptiles">
+      <button className="ptile" onClick={() => bwSheet()}>
+        <span className="ptile-k">{t('Weight')}</span>
+        <span className="ptile-v">{bw ? fmtNum(bw.w) + ' ' + S.unit : '—'}</span>
+        <span className="ptile-s" style={bwDelta ? { color: bwDeltaColor(bwDelta, bw?.w || 0) } : undefined}>{bwDelta == null ? fmtDate(bw?.d || todayISO(), true) : (bwDelta > 0 ? '+' : '−') + fmtNum(Math.abs(bwDelta)) + ' ' + S.unit}</span>
+      </button>
+      <button className="ptile" onClick={() => calendarSheet()}>
+        <span className="ptile-k">{t('Week streak')}</span>
+        <span className="ptile-v">{streakWeeks(S)}</span>
+        <span className="ptile-s">{planned ? t('{0} of {1}', wDone, planned) : wDone} {t('this week')}</span>
+      </button>
+    </div>
+
+    <StrengthList S={S} range={range} onPick={pickEx} />
+
     <div className="card">
-      <h2>{t('Activity — last 12 months')} <span className="dim" style={{ textTransform: 'none', letterSpacing: 0 }}>· {t('by time trained')}</span></h2>
+      <h2>{t('Activity — last 12 months')}</h2>
+      <div className="small dim" style={{ marginTop: -8, marginBottom: 12 }}>{t(S.workouts.length === 1 ? '{0} workout total' : '{0} workouts total', S.workouts.length)} · {monthW} {t('This month').toLowerCase()} · {t('by time trained')}</div>
       <Heatmap S={S} onDay={iso => { const ws = S.workouts.filter(w => w.d === iso); if (ws.length === 1) workoutDetailSheet(ws[0]); else if (ws.length) calendarSheet(iso) }} />
     </div>
 
@@ -240,22 +298,7 @@ export default function Stats() {
     {anyEffort && <EffortCard S={S} />}
 
     <div className="cols">
-      <div className="card">
-        <div className="row between" style={{ marginBottom: 8 }}>
-          <h2 style={{ margin: 0 }}>{t('Body weight')}</h2>
-          <div className="row" style={{ gap: 8 }}>
-            <Button size="sm" icon="target" style={S.targetW ? { color: 'var(--yellow)' } : undefined} onClick={goalSheet}>{S.targetW ? fmtNum(S.targetW) : t('Goal')}</Button>
-            <Button size="sm" icon="plus" onClick={() => bwSheet()}>{t('Log')}</Button>
-          </div>
-        </div>
-        <Segmented className="seg-range" value={range} onChange={setRange}
-          options={[{ value: 30, label: '1M' }, { value: 90, label: '3M' }, { value: 365, label: '1Y' }, { value: 0, label: t('All') }]} />
-        <div className="chart"><LineChart points={bwPts} h={160} unit={S.unit} goal={S.targetW} /></div>
-      </div>
-
-      <MeasuresCard S={S} />
-
-      <div className="card">
+      <div className="card" id="exprog">
         <h2>{t('Exercise progress')}</h2>
         {exHist.length ? <>
           <div className="sect-b" style={{ marginBottom: 10 }}>
@@ -284,12 +327,5 @@ export default function Stats() {
       </div>
     </div>
 
-    {S.workouts.length > 0 && <>
-      <div className="row between" style={{ marginBottom: 10 }}>
-        <h4 className="sec" style={{ margin: 0 }}>{t('Recent workouts')}</h4>
-        <Button size="sm" variant="ghost" trailingIcon="chevronRight" onClick={() => nav('/history')}>{t('All')} {S.workouts.length}</Button>
-      </div>
-      <div className="list">{[...S.workouts].reverse().slice(0, 6).map(w => <WorkoutRow key={w.id} w={w} onClick={() => workoutDetailSheet(w)} />)}</div>
-    </>}
-  </>
+  </div>
 }

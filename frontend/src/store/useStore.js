@@ -10,7 +10,7 @@ const KEY = 'gym_state_v1'
 let warned413 = false
 export const DEF = {
   unit: 'kg', restSec: 90, sound: true, keepAwake: true, lang: 'en',
-  theme: 'dark', accent: 'volt', body: 'male', targetW: null,
+  theme: 'light', accent: 'signal', uiV: 2, body: 'male', targetW: null,
   bodyweight: [], measures: [], routines: [], week: {}, dayPlan: {},
   exWeights: {}, exNotes: {}, workouts: [], active: null, lastBackup: null, backupSnooze: null, customEx: [], gifSize: 'full',
   // effort: which per-set effort scale is logged — 'none' | 'rir' | 'rpe'. null, not 'none', so

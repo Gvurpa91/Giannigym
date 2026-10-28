@@ -17,7 +17,7 @@ export default function History() {
   const rows = []
   for (let i = total - 1; i >= 0 && rows.length < shown; i--) rows.push(S.workouts[i])
   return <>
-    <div className="hdr"><button className="iconbtn" onClick={() => nav('/stats')} aria-label={t('Stats')}><Icon name="chevronLeft" /></button>
+    <div className="hdr"><button className="iconbtn" onClick={() => nav('/plan')} aria-label={t('Workouts')}><Icon name="chevronLeft" /></button>
       <div style={{ flex: 1, marginLeft: 12 }}><h1>{t('History')}</h1><div className="sub">{t('{0} workouts', S.workouts.length)}</div></div></div>
     {total ? <>
       <div className="list">{rows.map(w => <WorkoutRow key={w.id} w={w} onClick={() => workoutDetailSheet(w)} />)}</div>

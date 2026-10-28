@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useUI } from '../store/useUI.js'
+import { useStore } from '../store/useStore.js'
 import { t } from '../lib/i18n.js'
 import { Button } from './ui.jsx'
 
@@ -13,7 +15,12 @@ export default function RestTimer() {
   const timer = useUI(s => s.timer)
   const work = useUI(s => s.work)
   const { addRest, stopRest, finishWorkEarly, stopWork } = useUI()
-  const on = work || timer
+  // On the workout screen the rest is a full-screen overlay of its own (Workout.jsx), so the
+  // bar only shows there for a timed set; everywhere else it is the one reminder of the rest.
+  const path = useLocation().pathname
+  const active = useStore(s => !!s.S.active)
+  const focus = path === '/workout' && active
+  const on = work || (focus ? null : timer)
   // The bar is fixed above the tab bar and floats over whatever is beneath it — during a
   // rest that was the next set's row. Extra bottom padding lets the page scroll clear.
   useEffect(() => {

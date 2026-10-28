@@ -152,8 +152,8 @@ export default function Settings() {
       <Row icon="moon" iconTint="var(--indigo)" title={t('Theme')}>
         <Segmented
           className="seg-inline"
-          options={[{ value: 'dark', icon: 'moon', label: t('Dark') }, { value: 'light', icon: 'sun', label: t('Light') }]}
-          value={S.theme === 'light' ? 'light' : 'dark'}
+          options={[{ value: 'light', icon: 'sun', label: t('Light') }, { value: 'dark', icon: 'moon', label: t('Dark') }]}
+          value={S.theme === 'dark' ? 'dark' : 'light'}
           onChange={v => update(s => { s.theme = v })}
         />
       </Row>
@@ -170,7 +170,7 @@ export default function Settings() {
         <span className="lrow-t">{t('Accent color')}</span>
         <div className="swatches">
           {Object.entries(ACCENTS).map(([k, c]) => (
-            <button key={k} className={'swatch' + ((S.accent || 'volt') === k ? ' on' : '')}
+            <button key={k} className={'swatch' + ((S.accent || 'signal') === k ? ' on' : '')}
               style={{ background: c }} onClick={() => update(s => { s.accent = k })} aria-label={k} />
           ))}
         </div>
