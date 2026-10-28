@@ -15,7 +15,6 @@ import { MOBILE } from '../lib/mobile.js'
 import { backupDue, exportBackup, SNOOZE_DAYS } from '../lib/backup.js'
 import { series as measureSeries, change as measureChange, lengthUnit } from '../lib/measures.js'
 import { estimateMinutes } from '../lib/program-builder.js'
-import { exOr } from '../lib/exercises.js'
 
 // A job in flight or a proposal waiting is the only reason the Coach interrupts Home. When it
 // has nothing to say it renders nothing at all — and it only polls while Home is on screen.
@@ -112,7 +111,6 @@ function Hero({ S, routine, todayOvr, nav }) {
       <div><b>{routine.ex.length}</b><span>{t('exercises')}</span></div>
       <div><b>{sets}</b><span>{t('sets')}</span></div>
     </div>
-    {!!routine.ex.length && <div className="hero-p">{routine.ex.map(e => { const n = exOr(e.id).n; return n.charAt(0).toUpperCase() + n.slice(1) }).join(' · ')}</div>}
     <button className="hero-go" onClick={() => startFlow(routine.id)}><Icon name="play" />{t('Start')}</button>
   </div>
 }

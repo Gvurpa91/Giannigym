@@ -871,4 +871,5 @@ export default {
   'Continue': 'जारी रखें',
   'Keep going — add more under “Exercises” at the top': 'जारी रखें — ऊपर “व्यायाम” से और जोड़ें',
   '1Y': '1व',
+  'skipped': 'छोड़ा',
 }

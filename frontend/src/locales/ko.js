@@ -871,4 +871,5 @@ export default {
   'Continue': '계속',
   'Keep going — add more under “Exercises” at the top': '계속하세요 — 위쪽 ‘운동’에서 더 추가',
   '1Y': '1년',
+  'skipped': '건너뜀',
 }
