@@ -37,7 +37,12 @@ export default function Settings() {
     rd.onload = () => {
       try {
         const data = JSON.parse(rd.result)
-        if (!data.workouts || !data.routines) throw new Error('not an openGym backup')
+        // Shape-check before anything is replaced: a malformed file would otherwise be saved,
+        // synced to the profile, and break every screen that reads history on every device.
+        const arr = Array.isArray
+        if (!data || !arr(data.workouts) || !arr(data.routines)) throw new Error('not an openGym backup')
+        if (!data.workouts.every(w => w && typeof w.d === 'string' && arr(w.entries) && w.entries.every(e => e && e.id != null && arr(e.sets)))
+          || !data.routines.every(r => r && r.id != null && arr(r.ex))) throw new Error('the file is damaged')
         confirmSheet({ title: t('Import backup?'), message: t('This replaces all current data with the backup file.'), confirmText: t('Import'), danger: true, onConfirm: () => { replaceState(Object.assign(JSON.parse(JSON.stringify(DEF)), data), true); toast(t('Backup imported')) } })
       } catch (e) { toast(t('Import failed: {0}', e.message)) }
     }

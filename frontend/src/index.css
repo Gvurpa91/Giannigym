@@ -964,6 +964,7 @@ a{color:var(--label)}
 /* titles: large, tight, regular case */
 .hdr{margin:10px 0 22px;align-items:flex-end}
 .hdr h1{font-size:36px;line-height:40px;font-weight:600;letter-spacing:-.045em}
+@media (max-width:340px){.hdr h1{font-size:30px;line-height:34px}}
 .hdr .sub{font-size:15px;font-weight:500;color:var(--label-3);letter-spacing:-.005em;margin-top:6px}
 
 /* section labels: quiet, sentence case — the content is the loud thing */
@@ -1003,6 +1004,10 @@ h4.sec{font-size:13px;font-weight:600;letter-spacing:-.005em;color:var(--label-3
 .seg{background:var(--surface-2);border-radius:14px;padding:3px}
 .seg-sel{top:3px;bottom:3px;left:3px;width:calc((100% - 6px)/var(--n));background:var(--surface);border-radius:11px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .seg button{font-weight:600;min-height:34px}
+/* a list row with a segmented control: on a narrow phone the control drops under the label
+   instead of pushing past the screen edge */
+.lrow:has(.seg-inline){flex-wrap:wrap;row-gap:8px}
+.lrow .seg-inline{margin-left:auto}
 .sw.on{background:var(--ink)}
 .chk.on,.ck.on{background:var(--ink);color:var(--on-ink)}
 .ck.on svg{stroke:var(--on-ink)}
@@ -1295,7 +1300,8 @@ body.resting #app{padding-bottom:calc(260px + var(--sab))}
 .plist-s{font-size:13px;color:var(--label-3)}
 
 /* ---------------------------------------------------- Progress (v2) ------ */
-.stats .hdr{align-items:center}
+.stats .hdr{align-items:center;flex-wrap:wrap;row-gap:10px}
+.stats .hdr .seg-mini{margin-left:auto}
 .seg-mini{width:auto;min-width:0;flex:none}
 .seg-mini button{padding:0 9px;font-size:13px;min-height:30px}
 .phero{border-radius:28px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);padding:20px;display:flex;flex-direction:column;gap:14px;margin-bottom:12px}

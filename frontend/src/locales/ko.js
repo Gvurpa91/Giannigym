@@ -117,7 +117,6 @@ export default {
   'Then finish the superset partner.': '그다음 슈퍼세트 짝 운동을 마무리하세요.',
   'Previous best:': '이전 최고 기록:',
   'new record!': '신기록!',
-  'Save': '저장',
   'Save & next exercise': '저장하고 다음 운동',
   'Just close': '그냥 닫기',
   'Save weight': '무게 저장',
@@ -138,7 +137,6 @@ export default {
   'Finish early?': '일찍 마칠까요?',
   '{0} set still unchecked. Finish the workout now?': '아직 {0}세트가 남았어요. 지금 마칠까요?',
   '{0} sets still unchecked. Finish the workout now?': '아직 {0}세트가 남았어요. 지금 마칠까요?',
-  'Finish workout': '운동 마치기',
   'Start workout': '운동 시작',
   'today is {0}': '오늘은 {0}',
   'rest day, but no one’s stopping you': '휴식일이지만, 아무도 말리지 않아요',
@@ -872,4 +870,5 @@ export default {
   'a week': '주당',
   'Continue': '계속',
   'Keep going — add more under “Exercises” at the top': '계속하세요 — 위쪽 ‘운동’에서 더 추가',
+  '1Y': '1년',
 }

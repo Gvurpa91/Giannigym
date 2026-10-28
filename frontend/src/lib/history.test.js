@@ -297,10 +297,26 @@ describe('buildSets', () => {
       .toEqual([{ sec: 45, w: 0, done: false }])
   })
 
+  it('does not seed a cardio duration from a rep count when an exercise switches to cardio', () => {
+    const S = { exWeights: {}, workouts: [{ d: '2026-01-01', entries: [{ id: CARDIO, target: { mode: 'reps' }, sets: [{ w: 0, r: 30, done: true }] }] }] }
+    expect(buildSets(S, { id: CARDIO, sets: 1, min: 25, speed: 9 }))
+      .toEqual([{ min: 25, speed: 9, done: false }])
+  })
+
+  it('carries last time\'s cardio duration and speed forward', () => {
+    const S = { exWeights: {}, workouts: [{ d: '2026-01-01', entries: [{ id: CARDIO, sets: [{ min: 30, speed: 10, done: true }] }] }] }
+    expect(buildSets(S, { id: CARDIO, sets: 1, min: 25, speed: 9 }))
+      .toEqual([{ min: 30, speed: 10, done: false }])
+  })
+
   it('does not seed reps from a timed set when an exercise switches back', () => {
     const S = { exWeights: {}, workouts: [{ d: '2026-01-01', entries: [{ id: LIFT, target: { mode: 'time' }, sets: [{ sec: 70, w: 10, done: true }] }] }] }
     expect(buildSets(S, { id: LIFT, mode: 'reps', sets: 1, reps: 8, weight: 40 }))
       .toEqual([{ w: 40, r: 8, done: false }])
+  })
+
+  it('starts a plan with no weight (builder, Coach) at 0 rather than empty', () => {
+    expect(buildSets(emptyS, { id: LIFT, mode: 'reps', sets: 1, reps: 8 })).toEqual([{ w: 0, r: 8, done: false }])
   })
 
   it('still prefers the confirmed working weight for reps sets', () => {

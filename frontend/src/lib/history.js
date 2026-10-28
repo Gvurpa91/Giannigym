@@ -140,8 +140,10 @@ export function buildSets(S, cfg) {
 
   if (mode === 'cardio') {
     for (let i = 0; i < n; i++) {
+      // Same rule as timed sets: a set logged as reps has no duration to carry over.
       const prev = prevAt(i)
-      sets.push({ min: prev ? prev.min : (cfg.min || 20), speed: prev ? prev.speed : (cfg.speed || 8), done: false })
+      const carried = prev && prev.min > 0 ? prev : null
+      sets.push({ min: carried ? carried.min : (cfg.min || 20), speed: carried ? (carried.speed || 0) : (cfg.speed || 8), done: false })
     }
     return sets
   }
@@ -159,7 +161,8 @@ export function buildSets(S, cfg) {
   for (let i = 0; i < n; i++) {
     const prev = prevAt(i)
     const usable = prev && prev.r > 0 ? prev : null
-    const w = conf && conf.w > 0 ? conf.w : (usable ? usable.w : cfg.weight)
+    // Builder and Coach plans carry no weight: start those at 0, never at an empty field.
+    const w = conf && conf.w > 0 ? conf.w : ((usable ? usable.w : cfg.weight) || 0)
     sets.push({ w, r: usable ? usable.r : cfg.reps, done: false })
   }
   return sets

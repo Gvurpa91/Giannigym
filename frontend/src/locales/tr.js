@@ -117,7 +117,6 @@ export default {
   'Then finish the superset partner.': 'Sonra süpersetin diğer egzersizini bitir.',
   'Previous best:': 'Önceki rekor:',
   'new record!': 'yeni rekor!',
-  'Save': 'Kaydet',
   'Save & next exercise': 'Kaydet ve sonraki egzersiz',
   'Just close': 'Sadece kapat',
   'Save weight': 'Ağırlığı kaydet',
@@ -138,7 +137,6 @@ export default {
   'Finish early?': 'Erken bitir?',
   '{0} set still unchecked. Finish the workout now?': '{0} set işaretlenmedi. Şimdi bitirilsin mi?',
   '{0} sets still unchecked. Finish the workout now?': '{0} set işaretlenmedi. Şimdi bitirilsin mi?',
-  'Finish workout': 'Antrenmanı bitir',
   'Start workout': 'Antrenmana başla',
   'today is {0}': 'bugün {0} günü',
   'rest day, but no one’s stopping you': 'dinlenme günü, ama kimse seni durduramaz',
@@ -872,4 +870,5 @@ export default {
   'a week': 'haftada',
   'Continue': 'Devam',
   'Keep going — add more under “Exercises” at the top': 'Devam et — üstteki “Egzersizler”den daha fazla ekle',
+  '1Y': '1Y',
 }

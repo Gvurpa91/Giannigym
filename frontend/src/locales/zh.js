@@ -117,7 +117,6 @@ export default {
   'Then finish the superset partner.': '然后完成超级组的另一个动作。',
   'Previous best:': '之前最佳：',
   'new record!': '新纪录！',
-  'Save': '保存',
   'Save & next exercise': '保存并下一个动作',
   'Just close': '仅关闭',
   'Save weight': '保存重量',
@@ -138,7 +137,6 @@ export default {
   'Finish early?': '提前结束？',
   '{0} set still unchecked. Finish the workout now?': '还有 {0} 组未勾选。现在结束训练吗？',
   '{0} sets still unchecked. Finish the workout now?': '还有 {0} 组未勾选。现在结束训练吗？',
-  'Finish workout': '结束训练',
   'Start workout': '开始训练',
   'today is {0}': '今天是{0}',
   'rest day, but no one’s stopping you': '休息日，但没人拦着你',
@@ -872,4 +870,5 @@ export default {
   'a week': '每周',
   'Continue': '继续',
   'Keep going — add more under “Exercises” at the top': '继续 — 在顶部“动作”里添加更多',
+  '1Y': '1年',
 }

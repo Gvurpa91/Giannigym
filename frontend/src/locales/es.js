@@ -117,7 +117,6 @@ export default {
   'Then finish the superset partner.': 'Luego termina el otro ejercicio de la superserie.',
   'Previous best:': 'Mejor anterior:',
   'new record!': '¡nuevo récord!',
-  'Save': 'Guardar',
   'Save & next exercise': 'Guardar y siguiente ejercicio',
   'Just close': 'Solo cerrar',
   'Save weight': 'Guardar peso',
@@ -138,7 +137,6 @@ export default {
   'Finish early?': '¿Terminar antes?',
   '{0} set still unchecked. Finish the workout now?': 'Queda {0} serie sin marcar. ¿Terminar ahora?',
   '{0} sets still unchecked. Finish the workout now?': 'Quedan {0} series sin marcar. ¿Terminar ahora?',
-  'Finish workout': 'Terminar entrenamiento',
   'Start workout': 'Empezar entrenamiento',
   'today is {0}': 'hoy toca {0}',
   'rest day, but no one’s stopping you': 'día de descanso, pero nadie te lo impide',
@@ -872,4 +870,5 @@ export default {
   'a week': 'a la semana',
   'Continue': 'Continuar',
   'Keep going — add more under “Exercises” at the top': 'Sigue — añade más en «Ejercicios» arriba',
+  '1Y': '1A',
 }

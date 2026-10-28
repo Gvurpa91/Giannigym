@@ -117,7 +117,6 @@ export default {
   'Then finish the superset partner.': 'फिर सुपरसेट का दूसरा व्यायाम पूरा करें।',
   'Previous best:': 'पिछला सर्वश्रेष्ठ:',
   'new record!': 'नया रिकॉर्ड!',
-  'Save': 'सहेजें',
   'Save & next exercise': 'सहेजें और अगला व्यायाम',
   'Just close': 'बस बंद करें',
   'Save weight': 'वज़न सहेजें',
@@ -138,7 +137,6 @@ export default {
   'Finish early?': 'जल्दी समाप्त करें?',
   '{0} set still unchecked. Finish the workout now?': '{0} सेट अभी बाकी है। अभी समाप्त करें?',
   '{0} sets still unchecked. Finish the workout now?': '{0} सेट अभी बाकी हैं। अभी समाप्त करें?',
-  'Finish workout': 'वर्कआउट समाप्त करें',
   'Start workout': 'वर्कआउट शुरू करें',
   'today is {0}': 'आज {0} है',
   'rest day, but no one’s stopping you': 'आराम का दिन, पर आपको कोई नहीं रोक रहा',
@@ -872,4 +870,5 @@ export default {
   'a week': 'प्रति सप्ताह',
   'Continue': 'जारी रखें',
   'Keep going — add more under “Exercises” at the top': 'जारी रखें — ऊपर “व्यायाम” से और जोड़ें',
+  '1Y': '1व',
 }

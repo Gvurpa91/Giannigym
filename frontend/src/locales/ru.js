@@ -117,7 +117,6 @@ export default {
   'Then finish the superset partner.': 'Затем доделай второе упражнение суперсета.',
   'Previous best:': 'Прежний рекорд:',
   'new record!': 'новый рекорд!',
-  'Save': 'Сохранить',
   'Save & next exercise': 'Сохранить и к следующему',
   'Just close': 'Просто закрыть',
   'Save weight': 'Сохранить вес',
@@ -138,7 +137,6 @@ export default {
   'Finish early?': 'Завершить раньше?',
   '{0} set still unchecked. Finish the workout now?': 'Не отмечен {0} подход. Завершить сейчас?',
   '{0} sets still unchecked. Finish the workout now?': 'Не отмечено подходов: {0}. Завершить сейчас?',
-  'Finish workout': 'Завершить тренировку',
   'Start workout': 'Начать тренировку',
   'today is {0}': 'сегодня — {0}',
   'rest day, but no one’s stopping you': 'день отдыха, но никто тебя не остановит',
@@ -872,4 +870,5 @@ export default {
   'a week': 'в неделю',
   'Continue': 'Продолжить',
   'Keep going — add more under “Exercises” at the top': 'Продолжай — добавь ещё через «Упражнения» вверху',
+  '1Y': '1Г',
 }

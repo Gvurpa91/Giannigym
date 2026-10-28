@@ -92,7 +92,9 @@ function RestOverlay({ timer, last, next, onEffort }) {
   const A = S.active
   const kind = effortOf(S) === 'rpe' ? 'rpe' : 'rir'
   const set = last && A.entries[last.e]?.sets[last.s]
-  const showEffort = set && set.done && modeOf({ ...(A.entries[last.e].target || {}), id: A.entries[last.e].id }) === 'reps'
+  // Hidden only for a profile that switched effort logging off on purpose (S.effort 'none');
+  // one that never chose gets the three words, saved on the RIR scale.
+  const showEffort = S.effort !== 'none' && set && set.done && modeOf({ ...(A.entries[last.e].target || {}), id: A.entries[last.e].id }) === 'reps'
   const R = 134, C = 2 * Math.PI * R
   const frac = timer.total ? timer.left / timer.total : 0
   return <div className="rest-ov" role="dialog" aria-label={t('Rest')}>
@@ -158,7 +160,7 @@ function ActiveWorkout() {
   const nav = useNavigate()
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
-  const { startRest, stopRest } = useUI()
+  const { startRest, stopRest, finishWorkEarly, stopWork } = useUI()
   const timer = useUI(s => s.timer)
   const working = useUI(s => s.work)
   const [pickE, setPickE] = useState(null)   // entry chosen by hand inside a superset
@@ -192,10 +194,11 @@ function ActiveWorkout() {
   const modeAt = idx => modeOf({ ...(A.entries[idx].target || {}), id: A.entries[idx].id })
   const addSet = idx => mutEntry(idx, e => {
     const l = e.sets[e.sets.length - 1]
-    const m = modeOf({ ...(e.target || {}), id: e.id })
-    if (m === 'cardio') e.sets.push({ min: l ? l.min : (e.target.min || 20), speed: l ? l.speed : (e.target.speed || 8), done: false })
-    else if (m === 'time') e.sets.push({ sec: l ? l.sec : (e.target.sec || 45), w: l ? (l.w || 0) : (e.target.weight || 0), done: false })
-    else e.sets.push({ w: l ? l.w : 0, r: l ? l.r : e.target.reps, done: false })
+    const tg = e.target || {}
+    const m = modeOf({ ...tg, id: e.id })
+    if (m === 'cardio') e.sets.push({ min: l ? l.min : (tg.min || 20), speed: l ? l.speed : (tg.speed || 8), done: false })
+    else if (m === 'time') e.sets.push({ sec: l ? l.sec : (tg.sec || 45), w: l ? (l.w || 0) : (tg.weight || 0), done: false })
+    else e.sets.push({ w: l ? l.w : (tg.weight || 0), r: l ? l.r : (tg.reps || 8), done: false })
   })
   const removeSet = idx => mutEntry(idx, e => { if (e.sets.length > 1) e.sets.pop() })
   const goUnit = k => { setPickE(null); setPickS(null); update(s => { s.active.cur = units[k][0] }) }
@@ -290,6 +293,14 @@ function ActiveWorkout() {
     <button className="fx-go" onClick={addExercise}><Icon name="plus" />{t('Add exercise')}</button>
   </div>
 
+  // An exercise left with no sets at all (only reachable from damaged data) offers one back
+  // instead of a screen that has no set to show.
+  if (!entry.sets.length) return <div className="focus">
+    {top}
+    <div className="empty" style={{ flex: 1 }}>{cap(exOr(entry.id).n)}</div>
+    <button className="fx-go" onClick={() => addSet(eIdx)}><Icon name="plus" />{t('Add set')}</button>
+  </div>
+
   const ex = exOr(entry.id)
   const mode = modeAt(eIdx)
   const timed = mode === 'time'
@@ -322,8 +333,11 @@ function ActiveWorkout() {
     return autoE === eIdx ? lbl : cap(exOr(e2.id).n) + ' · ' + lbl
   })()
 
+  // A hold in progress takes over the big button: it counts down and logs the time held when
+  // tapped, so the one thing on screen is the one thing happening.
   let primary
-  if (!set.done) primary = timed
+  if (working) primary = <button className="fx-go sig" onClick={finishWorkEarly}><Icon name="check" />{t('Done')} · {clock(working.left)}</button>
+  else if (!set.done) primary = timed
     ? <button className="fx-go" disabled={!!working} onClick={() => startTimed(eIdx, sIdx)}><Icon name="play" />{t('Start set')}</button>
     : <button className="fx-go" onClick={() => toggle(eIdx, sIdx)}><Icon name="check" />{t('Set done')}</button>
   else if (unitDone) primary = isLastUnit
@@ -378,9 +392,11 @@ function ActiveWorkout() {
 
     <div className="fx-actions">
       {primary}
-      {set.done
-        ? <button className="fx-sub" onClick={() => toggle(eIdx, sIdx)}>{t('Undo set')}</button>
-        : timed && <button className="fx-sub" onClick={() => toggle(eIdx, sIdx)}>{t('Mark as done')}</button>}
+      {working
+        ? <button className="fx-sub" onClick={stopWork}>{t('Cancel')}</button>
+        : set.done
+          ? <button className="fx-sub" onClick={() => toggle(eIdx, sIdx)}>{t('Undo set')}</button>
+          : timed && <button className="fx-sub" onClick={() => toggle(eIdx, sIdx)}>{t('Mark as done')}</button>}
     </div>
 
     <h4 className="sec">{t('All sets')}</h4>
